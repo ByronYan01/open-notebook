@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ChevronLeft, LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 interface CollapsibleColumnProps {
   isCollapsed: boolean
@@ -21,6 +22,8 @@ export function CollapsibleColumn({
   collapsedLabel,
   children,
 }: CollapsibleColumnProps) {
+  const t = useTranslations('common')
+
   if (isCollapsed) {
     return (
       <TooltipProvider>
@@ -37,7 +40,7 @@ export function CollapsibleColumn({
                 'cursor-pointer group',
                 'py-6'
               )}
-              aria-label={`Expand ${collapsedLabel}`}
+              aria-label={`${t('expand')} ${collapsedLabel}`}
             >
               <CollapsedIcon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
               <div
@@ -49,7 +52,7 @@ export function CollapsibleColumn({
             </button>
           </TooltipTrigger>
           <TooltipContent side="right">
-            <p>Expand {collapsedLabel}</p>
+            <p>{t('expand')} {collapsedLabel}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -66,6 +69,15 @@ export function CollapsibleColumn({
 // Factory function to create a collapse button for card headers
 export function createCollapseButton(onToggle: () => void, label: string) {
   return (
+    <CollapseButtonInternal onToggle={onToggle} label={label} />
+  )
+}
+
+// Internal component that can use hooks
+function CollapseButtonInternal({ onToggle, label }: { onToggle: () => void; label: string }) {
+  const t = useTranslations('common')
+
+  return (
     <div className="hidden lg:block">
       <TooltipProvider>
         <Tooltip>
@@ -78,13 +90,13 @@ export function createCollapseButton(onToggle: () => void, label: string) {
                 onToggle()
               }}
               className="h-7 w-7 hover:bg-accent"
-              aria-label={`Collapse ${label}`}
+              aria-label={`${t('collapse')} ${label}`}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Collapse {label}</p>
+            <p>{t('collapse')} {label}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

@@ -12,13 +12,12 @@ import { QUERY_KEYS } from '@/lib/api/query-client'
 import { MarkdownEditor } from '@/components/ui/markdown-editor'
 import { InlineEdit } from '@/components/common/InlineEdit'
 import { cn } from "@/lib/utils";
+import { useTranslations } from 'next-intl'
 
-const createNoteSchema = z.object({
-  title: z.string().optional(),
-  content: z.string().min(1, 'Content is required'),
-})
-
-type CreateNoteFormData = z.infer<typeof createNoteSchema>
+type CreateNoteFormData = {
+  title?: string
+  content: string
+}
 
 interface NoteEditorDialogProps {
   open: boolean
@@ -28,6 +27,14 @@ interface NoteEditorDialogProps {
 }
 
 export function NoteEditorDialog({ open, onOpenChange, notebookId, note }: NoteEditorDialogProps) {
+  const t = useTranslations('notebooks.noteEditor')
+
+  // Dynamic schema with i18n
+  const createNoteSchema = z.object({
+    title: z.string().optional(),
+    content: z.string().min(1, t('validation.contentRequired')),
+  })
+
   const createNote = useCreateNote()
   const updateNote = useUpdateNote()
   const queryClient = useQueryClient()
@@ -122,12 +129,12 @@ export function NoteEditorDialog({ open, onOpenChange, notebookId, note }: NoteE
           isEditorFullscreen && "!max-w-screen !max-h-screen border-none w-screen h-screen"
       )}>
         <DialogTitle className="sr-only">
-          {isEditing ? 'Edit note' : 'Create note'}
+          {isEditing ? t('editTitle') : t('createTitle')}
         </DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
           {isEditing && noteLoading ? (
             <div className="flex-1 flex items-center justify-center py-10">
-              <span className="text-sm text-muted-foreground">Loading note…</span>
+              <span className="text-sm text-muted-foreground">{t('loading')}</span>
             </div>
           ) : (
             <>
@@ -135,8 +142,8 @@ export function NoteEditorDialog({ open, onOpenChange, notebookId, note }: NoteE
                 <InlineEdit
                   value={watchTitle ?? ''}
                   onSave={(value) => setValue('title', value || '')}
-                  placeholder="Add a title..."
-                  emptyText="Untitled Note"
+                  placeholder={t('titlePlaceholder')}
+                  emptyText={t('untitled')}
                   className="text-xl font-semibold"
                   inputClassName="text-xl font-semibold"
                 />
@@ -155,7 +162,7 @@ export function NoteEditorDialog({ open, onOpenChange, notebookId, note }: NoteE
                       value={field.value}
                       onChange={field.onChange}
                       height={420}
-                      placeholder="Write your note content here..."
+                      placeholder={t('contentPlaceholder')}
                       className={cn(
                           "w-full h-full min-h-[420px] [&_.w-md-editor]:!static [&_.w-md-editor]:!w-full [&_.w-md-editor]:!h-full",
                           !isEditorFullscreen && "rounded-md border"
@@ -172,17 +179,16 @@ export function NoteEditorDialog({ open, onOpenChange, notebookId, note }: NoteE
 
           <div className="border-t px-6 py-4 flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               type="submit"
               disabled={isSaving || (isEditing && noteLoading)}
             >
               {isSaving
-                ? isEditing ? 'Saving...' : 'Creating...'
-                : isEditing
-                  ? 'Save Note'
-                  : 'Create Note'}
+                ? (isEditing ? t('saving') : t('creating'))
+                : (isEditing ? t('save') : t('create'))
+              }
             </Button>
           </div>
         </form>

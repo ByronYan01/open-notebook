@@ -22,6 +22,7 @@ import { useDeleteNote } from '@/lib/hooks/use-notes'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { CollapsibleColumn, createCollapseButton } from '@/components/notebooks/CollapsibleColumn'
 import { useNotebookColumnsStore } from '@/lib/stores/notebook-columns-store'
+import { useTranslations } from 'next-intl'
 
 interface NotesColumnProps {
   notes?: NoteResponse[]
@@ -38,6 +39,7 @@ export function NotesColumn({
   contextSelections,
   onContextModeChange
 }: NotesColumnProps) {
+  const t = useTranslations('notebooks.notes')
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [editingNote, setEditingNote] = useState<NoteResponse | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -48,8 +50,8 @@ export function NotesColumn({
   // Collapsible column state
   const { notesCollapsed, toggleNotes } = useNotebookColumnsStore()
   const collapseButton = useMemo(
-    () => createCollapseButton(toggleNotes, 'Notes'),
-    [toggleNotes]
+    () => createCollapseButton(toggleNotes, t('title')),
+    [toggleNotes, t]
   )
 
   const handleDeleteClick = (noteId: string) => {
@@ -75,12 +77,12 @@ export function NotesColumn({
         isCollapsed={notesCollapsed}
         onToggle={toggleNotes}
         collapsedIcon={StickyNote}
-        collapsedLabel="Notes"
+        collapsedLabel={t('title')}
       >
         <Card className="h-full flex flex-col flex-1 overflow-hidden">
           <CardHeader className="pb-3 flex-shrink-0">
             <div className="flex items-center justify-between gap-2">
-              <CardTitle className="text-lg">Notes</CardTitle>
+              <CardTitle className="text-lg">{t('title')}</CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
@@ -90,7 +92,7 @@ export function NotesColumn({
                   }}
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Write Note
+                  {t('writeNote')}
                 </Button>
                 {collapseButton}
               </div>
@@ -105,8 +107,8 @@ export function NotesColumn({
             ) : !notes || notes.length === 0 ? (
               <EmptyState
                 icon={StickyNote}
-                title="No notes yet"
-                description="Create your first note to capture insights and observations."
+                title={t('empty.title')}
+                description={t('empty.description')}
               />
             ) : (
               <div className="space-y-3">
@@ -124,7 +126,7 @@ export function NotesColumn({
                           <User className="h-4 w-4 text-muted-foreground" />
                         )}
                         <Badge variant="secondary" className="text-xs">
-                          {note.note_type === 'ai' ? 'AI Generated' : 'Human'}
+                          {note.note_type === 'ai' ? t('badge.ai') : t('badge.human')}
                         </Badge>
                       </div>
 
@@ -165,7 +167,7 @@ export function NotesColumn({
                               className="text-red-600 focus:text-red-600"
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Delete Note
+                              {t('menu.delete')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -206,9 +208,9 @@ export function NotesColumn({
       <ConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title="Delete Note"
-        description="Are you sure you want to delete this note? This action cannot be undone."
-        confirmText="Delete"
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.description')}
+        confirmText={t('deleteDialog.confirm')}
         onConfirm={handleDeleteConfirm}
         isLoading={deleteNote.isPending}
         confirmVariant="destructive"

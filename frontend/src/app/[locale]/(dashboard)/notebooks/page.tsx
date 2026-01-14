@@ -9,8 +9,11 @@ import { Plus, RefreshCw } from "lucide-react";
 import { useNotebooks } from "@/lib/hooks/use-notebooks";
 import { CreateNotebookDialog } from "@/components/notebooks/CreateNotebookDialog";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 export default function NotebooksPage() {
+  const t = useTranslations("notebooks.page");
+  const tList = useTranslations("notebooks.list");
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { data: notebooks, isLoading, refetch } = useNotebooks(false);
@@ -51,7 +54,7 @@ export default function NotebooksPage() {
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-bold">Notebooks</h1>
+              <h1 className="text-2xl font-bold">{t("title")}</h1>
               <Button variant="outline" size="sm" onClick={() => refetch()}>
                 <RefreshCw className="h-4 w-4" />
               </Button>
@@ -60,12 +63,12 @@ export default function NotebooksPage() {
               <Input
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search notebooks..."
+                placeholder={t("searchPlaceholder")}
                 className="w-full sm:w-64"
               />
               <Button onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                New Notebook
+                {t("newNotebook")}
               </Button>
             </div>
           </div>
@@ -74,12 +77,14 @@ export default function NotebooksPage() {
             <NotebookList
               notebooks={filteredActive}
               isLoading={isLoading}
-              title="Active Notebooks"
+              title={tList("activeTitle")}
               emptyTitle={
-                isSearching ? "No notebooks match your search" : undefined
+                isSearching ? tList("noResults") : undefined
               }
               emptyDescription={
-                isSearching ? "Try using a different notebook name." : undefined
+                isSearching
+                  ? tList("noResultsHint")
+                  : undefined
               }
             />
 
@@ -87,16 +92,16 @@ export default function NotebooksPage() {
               <NotebookList
                 notebooks={filteredArchived}
                 isLoading={false}
-                title="Archived Notebooks"
+                title={tList("archivedTitle")}
                 collapsible
                 emptyTitle={
                   isSearching
-                    ? "No archived notebooks match your search"
+                    ? tList("noArchivedResults")
                     : undefined
                 }
                 emptyDescription={
                   isSearching
-                    ? "Modify your search to find archived notebooks."
+                    ? tList("noArchivedResultsHint")
                     : undefined
                 }
               />

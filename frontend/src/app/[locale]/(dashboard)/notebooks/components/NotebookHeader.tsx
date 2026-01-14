@@ -9,6 +9,7 @@ import { useUpdateNotebook, useDeleteNotebook } from '@/lib/hooks/use-notebooks'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { formatDistanceToNow } from 'date-fns'
 import { InlineEdit } from '@/components/common/InlineEdit'
+import { useTranslations } from 'next-intl'
 
 interface NotebookHeaderProps {
   notebook: NotebookResponse
@@ -16,7 +17,8 @@ interface NotebookHeaderProps {
 
 export function NotebookHeader({ notebook }: NotebookHeaderProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  
+  const t = useTranslations('notebooks.header')
+
   const updateNotebook = useUpdateNotebook()
   const deleteNotebook = useDeleteNotebook()
 
@@ -61,10 +63,10 @@ export function NotebookHeader({ notebook }: NotebookHeaderProps) {
                 onSave={handleUpdateName}
                 className="text-2xl font-bold"
                 inputClassName="text-2xl font-bold"
-                placeholder="Notebook name"
+                placeholder={t('namePlaceholder')}
               />
               {notebook.archived && (
-                <Badge variant="secondary">Archived</Badge>
+                <Badge variant="secondary">{t('archived')}</Badge>
               )}
             </div>
             <div className="flex gap-2">
@@ -76,12 +78,12 @@ export function NotebookHeader({ notebook }: NotebookHeaderProps) {
                 {notebook.archived ? (
                   <>
                     <ArchiveRestore className="h-4 w-4 mr-2" />
-                    Unarchive
+                    {t('unarchive')}
                   </>
                 ) : (
                   <>
                     <Archive className="h-4 w-4 mr-2" />
-                    Archive
+                    {t('archive')}
                   </>
                 )}
               </Button>
@@ -92,7 +94,7 @@ export function NotebookHeader({ notebook }: NotebookHeaderProps) {
                 className="text-red-600 hover:text-red-700"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                {t('delete')}
               </Button>
             </div>
           </div>
@@ -102,14 +104,14 @@ export function NotebookHeader({ notebook }: NotebookHeaderProps) {
             onSave={handleUpdateDescription}
             className="text-muted-foreground"
             inputClassName="text-muted-foreground"
-            placeholder="Add a description..."
+            placeholder={t('descriptionPlaceholder')}
             multiline
-            emptyText="Add a description..."
+            emptyText={t('descriptionPlaceholder')}
           />
-          
+
           <div className="text-sm text-muted-foreground">
-            Created {formatDistanceToNow(new Date(notebook.created), { addSuffix: true })} • 
-            Updated {formatDistanceToNow(new Date(notebook.updated), { addSuffix: true })}
+            {t('createdAt', { time: formatDistanceToNow(new Date(notebook.created), { addSuffix: true }) })} •
+            {t('updatedAt', { time: formatDistanceToNow(new Date(notebook.updated), { addSuffix: true }) })}
           </div>
         </div>
       </div>
@@ -117,9 +119,9 @@ export function NotebookHeader({ notebook }: NotebookHeaderProps) {
       <ConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        title="Delete Notebook"
-        description={`Are you sure you want to delete "${notebook.name}"? This action cannot be undone and will delete all sources, notes, and chat sessions.`}
-        confirmText="Delete Forever"
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.description', { name: notebook.name })}
+        confirmText={t('deleteDialog.confirm')}
         confirmVariant="destructive"
         onConfirm={handleDelete}
       />

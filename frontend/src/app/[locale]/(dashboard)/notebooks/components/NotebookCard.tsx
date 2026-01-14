@@ -16,6 +16,7 @@ import {
 import { useUpdateNotebook, useDeleteNotebook } from '@/lib/hooks/use-notebooks'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface NotebookCardProps {
   notebook: NotebookResponse
@@ -24,6 +25,7 @@ interface NotebookCardProps {
 export function NotebookCard({ notebook }: NotebookCardProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const router = useRouter()
+  const t = useTranslations('notebooks.card')
   const updateNotebook = useUpdateNotebook()
   const deleteNotebook = useDeleteNotebook()
 
@@ -59,7 +61,7 @@ export function NotebookCard({ notebook }: NotebookCardProps) {
                 </CardTitle>
                 {notebook.archived && (
                   <Badge variant="secondary" className="mt-1">
-                    Archived
+                    {t('archived')}
                   </Badge>
                 )}
               </div>
@@ -80,12 +82,12 @@ export function NotebookCard({ notebook }: NotebookCardProps) {
                     {notebook.archived ? (
                       <>
                         <ArchiveRestore className="h-4 w-4 mr-2" />
-                        Unarchive
+                        {t('menu.unarchive')}
                       </>
                     ) : (
                       <>
                         <Archive className="h-4 w-4 mr-2" />
-                        Archive
+                        {t('menu.archive')}
                       </>
                     )}
                   </DropdownMenuItem>
@@ -97,7 +99,7 @@ export function NotebookCard({ notebook }: NotebookCardProps) {
                     className="text-red-600"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {t('menu.delete')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -106,7 +108,7 @@ export function NotebookCard({ notebook }: NotebookCardProps) {
           
           <CardContent>
             <CardDescription className="line-clamp-2 text-sm">
-              {notebook.description || 'No description'}
+              {notebook.description || t('noDescription')}
             </CardDescription>
 
             <div className="mt-3 text-xs text-muted-foreground">
@@ -130,9 +132,9 @@ export function NotebookCard({ notebook }: NotebookCardProps) {
       <ConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        title="Delete Notebook"
-        description={`Are you sure you want to delete "${notebook.name}"? This action cannot be undone and will delete all sources, notes, and chat sessions.`}
-        confirmText="Delete"
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.description', { name: notebook.name })}
+        confirmText={t('deleteDialog.confirm')}
         confirmVariant="destructive"
         onConfirm={handleDelete}
       />

@@ -1,5 +1,152 @@
 {
   "HomePage": {
-    "title": "你好世界！"
+    "title": "你好 世界"
+  },
+  "common": {
+    "actions": {
+      "create": "创建",
+      "save": "保存",
+      "cancel": "取消",
+      "delete": "删除",
+      "edit": "编辑",
+      "archive": "归档",
+      "unarchive": "取消归档"
+    },
+    "expand": "展开",
+    "collapse": "折叠"
+  },
+  "notebooks": {
+    "page": {
+      "title": "笔记本",
+      "searchPlaceholder": "搜索笔记本...",
+      "newNotebook": "新建笔记本"
+    },
+    "list": {
+      "activeTitle": "活动笔记本",
+      "archivedTitle": "已归档笔记本",
+      "noResults": "没有笔记本匹配您的搜索",
+      "noResultsHint": "尝试使用不同的笔记本名称。",
+      "noArchivedResults": "没有已归档笔记本匹配您的搜索",
+      "noArchivedResultsHint": "修改您的搜索以查找已归档笔记本。",
+      "emptyTitle": "没有{title}",
+      "emptyDescription": "创建您的第一个笔记本来组织您的研究。"
+    },
+    "detail": {
+      "notFound": "笔记本未找到",
+      "notFoundDescription": "无法找到请求的笔记本。",
+      "tabs": {
+        "sources": "资源",
+        "notes": "笔记",
+        "chat": "聊天"
+      }
+    },
+    "card": {
+      "archived": "已归档",
+      "noDescription": "无描述",
+      "menu": {
+        "archive": "归档",
+        "unarchive": "取消归档",
+        "delete": "删除"
+      },
+      "deleteDialog": {
+        "title": "删除笔记本",
+        "description": "确定要删除\"{name}\"吗？此操作无法撤销，将删除所有资源、笔记和聊天会话。",
+        "confirm": "删除"
+      }
+    },
+    "header": {
+      "namePlaceholder": "笔记本名称",
+      "descriptionPlaceholder": "添加描述...",
+      "archived": "已归档",
+      "archive": "归档",
+      "unarchive": "取消归档",
+      "delete": "删除",
+      "createdAt": "创建于 {time}",
+      "updatedAt": "更新于 {time}",
+      "deleteDialog": {
+        "title": "删除笔记本",
+        "description": "确定要删除\"{name}\"吗？此操作无法撤销，将删除所有资源、笔记和聊天会话。",
+        "confirm": "永久删除"
+      }
+    },
+    "noteEditor": {
+      "editTitle": "编辑笔记",
+      "createTitle": "创建笔记",
+      "loading": "加载笔记中…",
+      "titlePlaceholder": "添加标题...",
+      "untitled": "无标题笔记",
+      "contentPlaceholder": "在此处编写您的笔记内容...",
+      "cancel": "取消",
+      "saving": "保存中…",
+      "creating": "创建中…",
+      "save": "保存笔记",
+      "create": "创建笔记",
+      "validation": {
+        "contentRequired": "内容为必填项"
+      }
+    },
+    "chat": {
+      "title": "与笔记本聊天",
+      "error": {
+        "title": "无法加载聊天",
+        "message": "请尝试刷新页面"
+      }
+    },
+    "notes": {
+      "title": "笔记",
+      "writeNote": "写笔记",
+      "empty": {
+        "title": "还没有笔记",
+        "description": "创建您的第一条笔记以记录见解和观察。"
+      },
+      "badge": {
+        "ai": "AI 生成",
+        "human": "人工"
+      },
+      "menu": {
+        "delete": "删除笔记"
+      },
+      "deleteDialog": {
+        "title": "删除笔记",
+        "description": "确定要删除此笔记吗？此操作无法撤销。",
+        "confirm": "删除"
+      }
+    },
+    "sources": {
+      "title": "资源",
+      "addSource": "添加资源",
+      "addNewSource": "添加新资源",
+      "addExistingSource": "添加现有资源",
+      "empty": {
+        "title": "还没有资源",
+        "description": "添加您的第一个资源以开始构建知识库。"
+      },
+      "deleteDialog": {
+        "title": "删除资源",
+        "description": "确定要删除此资源吗？此操作无法撤销。",
+        "confirm": "删除"
+      },
+      "removeDialog": {
+        "title": "从笔记本中移除资源",
+        "description": "确定要从笔记本中移除此资源吗？资源本身不会被删除。",
+        "confirm": "移除"
+      }
+    },
+    "createDialog": {
+      "title": "创建新笔记本",
+      "description": "通过专门的空间来组织您的研究，用于存放相关资源和笔记。",
+      "name": {
+        "label": "名称",
+        "placeholder": "输入笔记本名称"
+      },
+      "descriptionLabel": "描述",
+      "descriptionPlaceholder": "描述此笔记本的用途和范围...",
+      "cancel": "取消",
+      "creating": "创建中…",
+      "confirm": "创建笔记本",
+      "validation": {
+        "nameRequired": "名称为必填项"
+      }
+    }
   }
 }
