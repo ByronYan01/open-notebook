@@ -148,5 +148,707 @@
         "nameRequired": "Name is required"
       }
     }
+  },
+  "sources": {
+    "addButton": {
+      "label": "Add Source"
+    },
+    "steps": {
+      "notebooks": {
+        "title": "Select Notebooks (optional)",
+        "description": "Choose which notebooks should contain this source. You can select multiple notebooks or leave this empty.",
+        "empty": "No notebooks found."
+      },
+      "processing": {
+        "transformations": {
+          "title": "Transformations (optional)",
+          "description": "Apply AI transformations to analyze and extract insights from your content.",
+          "empty": "No transformations found."
+        },
+        "settings": {
+          "title": "Processing Settings",
+          "description": "Configure how your source will be processed and stored.",
+          "embedding": {
+            "enable": {
+              "title": "Enable embedding for search",
+              "description": "Allows this source to be found in vector searches and AI queries"
+            },
+            "always": {
+              "title": "Embedding enabled automatically",
+              "description": "Your settings are configured to always embed content for vector search. You can change this in Settings."
+            },
+            "never": {
+              "title": "Embedding disabled",
+              "description": "Your settings are configured to skip embedding. Vector search won't be available for this source. You can change this in Settings."
+            }
+          }
+        }
+      },
+      "sourceType": {
+        "stepTitle": "Source Type",
+        "stepDescription": "Choose how you want to add your content",
+        "types": {
+          "link": {
+            "label": "Link",
+            "description": "Add a web page or URL",
+            "url": {
+              "label": "URL(s) *",
+              "count": "{count} URL",
+              "max": "max {max}",
+              "placeholder": "Enter URLs, one per line\nhttps://example.com/article1\nhttps://example.com/article2",
+              "hint": "Paste multiple URLs (one per line) to batch import",
+              "errors": {
+                "title": "Invalid URLs detected:",
+                "line": "Line {line}",
+                "fix": "Please fix or remove invalid URLs to continue"
+              }
+            }
+          },
+          "upload": {
+            "label": "Upload",
+            "description": "Upload a document or file",
+            "file": {
+              "label": "File(s) *",
+              "count": "{count} file",
+              "max": "max {max}",
+              "maxError": "Maximum {max} files allowed per batch",
+              "hint": "Select multiple files to batch import. Supported: Documents (PDF, DOC, DOCX, PPT, XLS, EPUB, TXT, MD), Media (MP4, MP3, WAV, M4A), Images (JPG, PNG), Archives (ZIP)",
+              "selected": "Selected files:",
+              "size": "{size} KB"
+            }
+          },
+          "text": {
+            "label": "Text",
+            "description": "Add text content directly",
+            "content": {
+              "label": "Text Content *",
+              "placeholder": "Paste or type your content here..."
+            }
+          }
+        },
+        "title": {
+          "optional": "Title (optional)",
+          "required": "Title *",
+          "optionalDescription": "If left empty, a title will be generated from the content",
+          "requiredDescription": "A title is required for text content",
+          "placeholder": "Give your source a descriptive title"
+        },
+        "batch": {
+          "badge": "Batch Mode",
+          "indicator": "{count} {type} will be processed",
+          "description": "Titles will be automatically generated for each source. The same notebooks and transformations will be applied to all items."
+        }
+      }
+    },
+    "page": {
+      "title": "All Sources",
+      "subtitle": "Browse all sources across your notebooks. Use arrow keys to navigate and Enter to open.",
+      "empty": {
+        "title": "No sources yet",
+        "description": "Sources from all notebooks will appear here"
+      },
+      "errors": {
+        "loadFailed": "Failed to load sources"
+      },
+      "types": {
+        "link": "Link",
+        "file": "File",
+        "text": "Text"
+      },
+      "untitled": "Untitled Source",
+      "loadingMore": "Loading more sources...",
+      "table": {
+        "type": "Type",
+        "title": "Title",
+        "created": "Created",
+        "insights": "Insights",
+        "embedded": "Embedded",
+        "actions": "Actions",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "delete": {
+        "title": "Delete Source",
+        "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+        "confirm": "Delete",
+        "success": "Source deleted successfully",
+        "failed": "Failed to delete source"
+      }
+    },
+    "card": {
+      "untitled": "Untitled Source",
+      "checking": "Checking...",
+      "insights": "insights",
+      "progress": "Progress",
+      "removeFromNotebook": "Remove from Notebook",
+      "retry": "Retry",
+      "delete": "Delete Source",
+      "status": {
+        "processing": "Processing",
+        "preparing": "Preparing to process",
+        "queued": "Queued",
+        "waiting": "Waiting to be processed",
+        "beingProcessed": "Being processed",
+        "completed": "Completed",
+        "successfullyProcessed": "Successfully processed",
+        "failed": "Failed",
+        "processingFailed": "Processing failed"
+      }
+    },
+    "addDialog": {
+      "title": "Add New Source",
+      "description": "Add content from links, uploads, or text to your notebooks.",
+      "validation": {
+        "contentRequired": "Please provide the required content for the selected source type",
+        "titleRequired": "Title is required for text sources"
+      },
+      "wizard": {
+        "step1": {
+          "title": "Source & Content",
+          "description": "Choose type and add content"
+        },
+        "step2": {
+          "title": "Organization",
+          "description": "Select notebooks"
+        },
+        "step3": {
+          "title": "Processing",
+          "description": "Choose transformations and options"
+        }
+      },
+      "processing": {
+        "batch": "Processing {count} sources...",
+        "single": "Submitting source for processing...",
+        "error": "Error creating source. Please try again.",
+        "batchTitle": "Processing Batch",
+        "singleTitle": "Processing Source",
+        "batchDescription": "Processing {count} sources. This may take a few moments.",
+        "singleDescription": "Your source is being processed. This may take a few moments.",
+        "default": "Processing...",
+        "completed": "completed",
+        "failed": "failed",
+        "current": "Current"
+      },
+      "toast": {
+        "batchSuccess": "{count} source created successfully",
+        "batchFailed": "Failed to create all {count} sources",
+        "batchPartial": "{success} succeeded, {failed} failed"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "done": "Done",
+        "creating": "Creating..."
+      }
+    },
+    "addExistingDialog": {
+      "title": "Add Existing Sources",
+      "description": "Search and select existing sources to add to this notebook",
+      "searchPlaceholder": "Search sources...",
+      "loading": "Loading sources...",
+      "noResults": "No sources found",
+      "linked": "Linked",
+      "added": "Added",
+      "truncationWarning": "Showing first 100 sources. Use the Search feature to find specific sources.",
+      "selected": "{count} source selected",
+      "buttons": {
+        "cancel": "Cancel",
+        "adding": "Adding...",
+        "addSelected": "Add Selected"
+      }
+    }
+  },
+  "search": {
+    "page": {
+      "title": "Ask and Search",
+      "chooseMode": "Choose a mode",
+      "askOrSearchAria": "Ask or search your knowledge base",
+      "askTab": "Ask (beta)",
+      "searchTab": "Search"
+    },
+    "ask": {
+      "title": "Ask Your Knowledge Base (beta)",
+      "description": "The LLM will answer your query based on the documents in your knowledge base.",
+      "questionLabel": "Question",
+      "questionPlaceholder": "Enter your question...",
+      "questionAria": "Enter your question to ask the knowledge base",
+      "submitHint": "Press Cmd/Ctrl+Enter to submit",
+      "noEmbeddingModel": "You can't use this feature because you have no embedding model selected. Please set one up in the Models page.",
+      "usingCustomModels": "Using Custom Models",
+      "usingDefaultModels": "Using Default Models",
+      "advanced": "Advanced",
+      "modelStrategy": "Strategy",
+      "modelAnswer": "Answer",
+      "modelFinal": "Final",
+      "processing": "Processing...",
+      "askButton": "Ask",
+      "saveToNotebooks": "Save to Notebooks"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search your knowledge base for specific keywords or concepts",
+      "queryPlaceholder": "Enter search query...",
+      "queryAria": "Enter search query",
+      "searchButton": "Search",
+      "searchAria": "Search knowledge base",
+      "submitHint": "Press Enter to search",
+      "searchTypeLabel": "Search Type",
+      "noEmbeddingModelWarning": "Vector search requires an embedding model. Only text search is available.",
+      "textSearch": "Text Search",
+      "vectorSearch": "Vector Search",
+      "searchInLabel": "Search In",
+      "searchSources": "Search Sources",
+      "searchNotes": "Search Notes",
+      "resultsCount": "{count} result{count, plural, one{} other{s}} found",
+      "searchTypeBadge": "{type} search",
+      "noResults": "No results found for \"{query}\"",
+      "matches": "Matches ({count})"
+    },
+    "streamingResponse": {
+      "ariaLabel": "Ask response",
+      "strategy": {
+        "title": "Strategy",
+        "reasoning": "Reasoning",
+        "searchTerms": "Search Terms"
+      },
+      "individualAnswers": "Individual Answers ({count})",
+      "finalAnswer": "Final Answer",
+      "processing": "Processing your question...",
+      "referenceNotFound": "This {type} could not be found",
+      "type": {
+        "source": "source",
+        "note": "note",
+        "insight": "insight"
+      }
+    },
+    "advancedModelsDialog": {
+      "title": "Advanced Model Selection",
+      "description": "Choose specific models for each stage of the Ask process",
+      "strategyModelLabel": "Strategy Model",
+      "strategyModelPlaceholder": "Select strategy model",
+      "answerModelLabel": "Answer Model",
+      "answerModelPlaceholder": "Select answer model",
+      "finalAnswerModelLabel": "Final Answer Model",
+      "finalAnswerModelPlaceholder": "Select final answer model",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes"
+    },
+    "saveToNotebooksDialog": {
+      "title": "Save to Notebooks",
+      "description": "Select one or more notebooks to save this answer",
+      "emptyMessage": "No notebooks found. Create a notebook first.",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "saveButton": "Save to {count} notebook{count, plural, one{} other{s}}",
+      "success": "Answer saved to {count} notebook{count, plural, one{} other{s}}",
+      "errors": {
+        "selectAtLeastOne": "Please select at least one notebook",
+        "saveFailed": "Failed to save answer"
+      }
+    }
+  },
+  "podcasts": {
+    "page": {
+      "title": "Podcasts",
+      "description": "Keep track of generated episodes and manage reusable templates.",
+      "chooseView": "Choose a view",
+      "viewsAria": "Podcast views",
+      "episodesTab": "Episodes",
+      "templatesTab": "Templates"
+    },
+    "episodesTab": {
+      "title": "Episodes overview",
+      "description": "Monitor podcast generation jobs and review the final artefacts.",
+      "generateButton": "Generate Podcast",
+      "refreshButton": "Refresh",
+      "summaryBadges": {
+        "total": "Total",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "pending": "Pending"
+      },
+      "statusGroups": {
+        "running": {
+          "title": "Currently Processing",
+          "description": "Episodes that are actively generating assets."
+        },
+        "pending": {
+          "title": "Queued / Pending",
+          "description": "Submitted episodes waiting to start processing."
+        },
+        "completed": {
+          "title": "Completed Episodes",
+          "description": "Ready to review, download, or publish."
+        },
+        "failed": {
+          "title": "Failed Episodes",
+          "description": "Episodes that encountered issues during generation."
+        }
+      },
+      "errors": {
+        "loadFailed": {
+          "title": "Failed to load episodes",
+          "description": "We could not fetch the latest podcast episodes. Try again shortly."
+        }
+      },
+      "loading": "Loading episodes…",
+      "emptyState": "No podcast episodes yet. Generate your first one from the notebook or source chat interfaces."
+    },
+    "episodeCard": {
+      "profile": "Profile",
+      "unknown": "Unknown",
+      "unknownProfile": "Unknown profile",
+      "details": "Details",
+      "audioError": "Audio unavailable",
+      "tabs": {
+        "summary": "Summary",
+        "outline": "Outline",
+        "transcript": "Transcript"
+      },
+      "sections": {
+        "episodeProfile": "Episode Profile",
+        "speakerProfile": "Speaker Profile",
+        "briefing": "Briefing"
+      },
+      "fields": {
+        "outlineModel": "Outline Model",
+        "transcriptModel": "Transcript Model",
+        "segments": "Segments",
+        "voiceId": "Voice ID",
+        "backstory": "Backstory",
+        "personality": "Personality"
+      },
+      "status": {
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "pending": "Pending",
+        "unknown": "Unknown"
+      },
+      "segmentFallback": "Segment {index}",
+      "noDescription": "No description provided.",
+      "noOutline": "No outline available.",
+      "speakerFallback": "Speaker",
+      "noTranscript": "No transcript available.",
+      "delete": "Delete",
+      "deleteDialog": {
+        "title": "Delete episode?",
+        "description": "This will remove \"{name}\" and its audio file permanently.",
+        "cancel": "Cancel",
+        "deleting": "Deleting…",
+        "confirm": "Delete"
+      }
+    },
+    "episodeProfilesPanel": {
+      "title": "Episode profiles",
+      "description": "Define reusable generation settings for your shows.",
+      "createButton": "Create profile",
+      "speakerProfileRequired": "Create a speaker profile before adding an episode profile.",
+      "emptyState": "No episode profiles yet. Create one to kickstart podcast generation.",
+      "noDescription": "No description provided.",
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "deleteDialog": {
+        "title": "Delete profile?",
+        "description": "This will remove \"{name}\". Existing episodes keep their data, but new ones will no longer use this configuration.",
+        "cancel": "Cancel",
+        "deleting": "Deleting…",
+        "confirm": "Delete"
+      },
+      "fields": {
+        "outlineModel": "Outline model",
+        "transcriptModel": "Transcript model",
+        "segments": "Segments",
+        "speakerProfile": "Speaker profile",
+        "defaultBriefing": "Default briefing"
+      }
+    },
+    "speakerProfilesPanel": {
+      "title": "Speaker profiles",
+      "description": "Configure voices and personalities for generated episodes.",
+      "createButton": "Create speaker",
+      "emptyState": "No speaker profiles yet. Create one to make episode templates available.",
+      "noDescription": "No description provided.",
+      "usage": {
+        "used": "Used by {count} episode{count, plural, one{} other{s}}",
+        "unused": "Unused"
+      },
+      "fields": {
+        "voiceId": "Voice ID",
+        "backstory": "Backstory",
+        "personality": "Personality"
+      },
+      "edit": "Edit",
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "deleteDialog": {
+        "title": "Delete speaker profile?",
+        "description": "Deleting \"{name}\" cannot be undone.",
+        "inUseWarning": "Remove this speaker from episode profiles before deleting it.",
+        "cancel": "Cancel",
+        "deleting": "Deleting…",
+        "confirm": "Delete"
+      }
+    },
+    "templatesTab": {
+      "title": "Templates workspace",
+      "description": "Build reusable episode and speaker configurations for fast podcast production.",
+      "loading": "Loading templates…",
+      "errors": {
+        "loadFailed": {
+          "title": "Failed to load templates data",
+          "description": "Ensure the API is running and try again. Some sections may be incomplete."
+        }
+      },
+      "overview": {
+        "title": "How templates power podcast generation",
+        "introduction": "Templates split the podcast workflow into two reusable building blocks. Mix and match them whenever you generate a new episode.",
+        "episodeProfiles": {
+          "title": "Episode profiles set the format",
+          "points": {
+            "segments": "Outline the number of segments and how the story flows",
+            "models": "Pick the language models used for briefing, outlining, and script writing",
+            "briefings": "Store default briefings so every episode starts with a consistent tone"
+          }
+        },
+        "speakerProfiles": {
+          "title": "Speaker profiles bring voices to life",
+          "points": {
+            "tts": "Choose the text-to-speech provider and model",
+            "details": "Capture personality, backstory, and pronunciation notes per speaker",
+            "reuse": "Reuse the same host or guest voices across different episode formats"
+          }
+        },
+        "workflow": {
+          "title": "Recommended workflow",
+          "steps": {
+            "createSpeakers": "Create speaker profiles for each voice you need",
+            "buildEpisodes": "Build episode profiles that reference those speakers by name",
+            "generate": "Generate podcasts by selecting the episode profile that fits the story"
+          },
+          "note": "Episode profiles reference speaker profiles by name, so starting with speakers avoids missing voice assignments later."
+        }
+      }
+    },
+    "generateDialog": {
+      "title": "Generate Podcast Episode",
+      "description": "Select the content to include and configure the episode details before generating a new podcast episode.",
+      "sourceModes": {
+        "summary": "Summary",
+        "fullContent": "Full content"
+      },
+      "contentSection": {
+        "title": "Content",
+        "description": "Pick notebooks, sources, and notes to include in this episode.",
+        "itemsSelected": "items selected",
+        "tokens": "tokens",
+        "chars": "chars",
+        "loading": "Loading notebooks",
+        "noNotebooks": "No notebooks found. Create a notebook and add content before generating a podcast.",
+        "selectionSummary": "{sources} sources, {notes} notes",
+        "noSelection": "No content selected",
+        "sources": "sources",
+        "notes": "notes",
+        "sourcesTitle": "Sources",
+        "noSources": "No sources available in this notebook.",
+        "untitledSource": "Untitled source",
+        "link": "Link",
+        "file": "File",
+        "embedded": "Embedded",
+        "notEmbedded": "Not embedded",
+        "selectMode": "Select mode",
+        "notesTitle": "Notes",
+        "noNotes": "No notes available in this notebook.",
+        "untitledNote": "Untitled note",
+        "updated": "Updated {date}"
+      },
+      "settingsSection": {
+        "title": "Episode Settings",
+        "loading": "Loading episode profiles",
+        "noProfiles": "No episode profiles found. Create an episode profile before generating a podcast.",
+        "profileLabel": "Episode profile",
+        "profilePlaceholder": "Select an episode profile",
+        "usesSpeaker": "Uses speaker profile {speaker}",
+        "nameLabel": "Episode name",
+        "namePlaceholder": "e.g., AI and the Future of Work",
+        "instructionsLabel": "Additional instructions",
+        "instructionsPlaceholder": "Any supplemental guidance to append to the episode briefing...",
+        "instructionsHint": "These instructions will be appended to the episode profile's default briefing.",
+        "generating": "Generating episode...",
+        "submitButton": "Generate Podcast",
+        "submitHint": "The episode will appear in the Episodes list once generation starts. Refresh the list to monitor progress."
+      },
+      "errors": {
+        "profileRequired": {
+          "title": "Episode profile required",
+          "description": "Select an episode profile before generating a podcast."
+        },
+        "nameRequired": {
+          "title": "Episode name required",
+          "description": "Provide a name for the episode."
+        },
+        "addContext": {
+          "title": "Add context",
+          "description": "Select at least one source or note to include in the episode."
+        },
+        "generationFailed": {
+          "title": "Podcast generation failed",
+          "description": "Please try again later."
+        }
+      }
+    },
+    "forms": {
+      "episodeProfile": {
+        "createTitle": "Create Episode Profile",
+        "editTitle": "Edit Episode Profile",
+        "description": "Define how episodes should be generated and which speaker configuration they use by default.",
+        "alerts": {
+          "noSpeakerProfiles": {
+            "title": "No speaker profiles available",
+            "description": "Create a speaker profile before configuring an episode profile."
+          },
+          "noLanguageModels": {
+            "title": "No language models available",
+            "description": "Add language models in the Models section to configure outline and transcript generation."
+          }
+        },
+        "sections": {
+          "speakerConfig": "Speaker configuration",
+          "outlineGeneration": "Outline generation",
+          "transcriptGeneration": "Transcript generation"
+        },
+        "fields": {
+          "name": {
+            "label": "Profile name",
+            "placeholder": "Tech discussion"
+          },
+          "segments": {
+            "label": "Segments"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Short summary of when to use this profile"
+          },
+          "speakerProfile": {
+            "label": "Speaker profile",
+            "placeholder": "Select a speaker profile"
+          },
+          "outlineProvider": {
+            "label": "Provider",
+            "placeholder": "Select provider"
+          },
+          "outlineModel": {
+            "label": "Model",
+            "placeholder": "Select model"
+          },
+          "transcriptProvider": {
+            "label": "Provider",
+            "placeholder": "Select provider"
+          },
+          "transcriptModel": {
+            "label": "Model",
+            "placeholder": "Select model"
+          },
+          "defaultBriefing": {
+            "label": "Default briefing",
+            "placeholder": "Outline the structure, tone, and goals for this episode format"
+          }
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "saving": "Saving…",
+          "creating": "Creating…",
+          "saveChanges": "Save changes",
+          "createProfile": "Create profile"
+        },
+        "errors": {
+          "nameRequired": "Name is required",
+          "speakerProfileRequired": "Speaker profile is required",
+          "outlineProviderRequired": "Outline provider is required",
+          "outlineModelRequired": "Outline model is required",
+          "transcriptProviderRequired": "Transcript provider is required",
+          "transcriptModelRequired": "Transcript model is required",
+          "defaultBriefingRequired": "Default briefing is required",
+          "segmentsInteger": "Must be an integer",
+          "segmentsMin": "At least 3 segments",
+          "segmentsMax": "Maximum 20 segments"
+        }
+      },
+      "speakerProfile": {
+        "createTitle": "Create Speaker Profile",
+        "editTitle": "Edit Speaker Profile",
+        "description": "Configure text-to-speech settings and define up to four speakers.",
+        "alerts": {
+          "noTtsModels": {
+            "title": "No text-to-speech models available",
+            "description": "Add TTS models in the Models section before creating a speaker profile."
+          }
+        },
+        "fields": {
+          "profileName": {
+            "label": "Profile name",
+            "placeholder": "Weekly show host"
+          },
+          "provider": {
+            "label": "Provider",
+            "placeholder": "Select provider"
+          },
+          "model": {
+            "label": "Model",
+            "placeholder": "Select model"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Notes about tone, brand, or usage"
+          }
+        },
+        "speakersSection": {
+          "title": "Speakers",
+          "description": "Configure between one and four voices for this profile.",
+          "addSpeaker": "Add speaker",
+          "speaker": "Speaker {index}",
+          "remove": "Remove"
+        },
+        "speakersFields": {
+          "name": {
+            "label": "Name",
+            "placeholder": "Host 1"
+          },
+          "voiceId": {
+            "label": "Voice ID",
+            "placeholder": "voice_123"
+          },
+          "backstory": {
+            "label": "Backstory",
+            "placeholder": "Short biography or context for the speaker"
+          },
+          "personality": {
+            "label": "Personality",
+            "placeholder": "Describe style and tone"
+          }
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "saving": "Saving…",
+          "creating": "Creating…",
+          "saveChanges": "Save changes",
+          "createProfile": "Create profile"
+        },
+        "errors": {
+          "nameRequired": "Name is required",
+          "providerRequired": "Provider is required",
+          "modelRequired": "Model is required",
+          "atLeastOneSpeaker": "At least one speaker is required",
+          "maxFourSpeakers": "You can configure up to 4 speakers",
+          "speakerNameRequired": "Name is required",
+          "voiceIdRequired": "Voice ID is required",
+          "backstoryRequired": "Backstory is required",
+          "personalityRequired": "Personality is required"
+        }
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { AlertCircle, Lightbulb, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { EpisodeProfilesPanel } from '@/components/podcasts/EpisodeProfilesPanel'
 import { SpeakerProfilesPanel } from '@/components/podcasts/SpeakerProfilesPanel'
@@ -24,6 +25,7 @@ function modelsByProvider(models: Model[], type: Model['type']) {
 }
 
 export function TemplatesTab() {
+  const t = useTranslations('podcasts.templatesTab')
   const {
     episodeProfiles,
     isLoading: loadingEpisodeProfiles,
@@ -58,58 +60,56 @@ export function TemplatesTab() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold">Templates workspace</h2>
+        <h2 className="text-xl font-semibold">{t('title')}</h2>
         <p className="text-sm text-muted-foreground">
-          Build reusable episode and speaker configurations for fast podcast production.
+          {t('description')}
         </p>
       </div>
 
       <Accordion type="single" collapsible className="w-full">
-        <AccordionItem 
-          value="overview" 
+        <AccordionItem
+          value="overview"
           className="overflow-hidden rounded-xl border border-border bg-muted/40 px-4"
         >
           <AccordionTrigger className="gap-2 py-4 text-left text-sm font-semibold">
             <div className="flex items-center gap-2">
               <Lightbulb className="h-4 w-4 text-primary" />
-              How templates power podcast generation
+              {t('overview.title')}
             </div>
           </AccordionTrigger>
           <AccordionContent className="text-sm text-muted-foreground">
             <div className="space-y-4">
               <p className="text-muted-foreground/90">
-                Templates split the podcast workflow into two reusable building blocks. Mix and match
-                them whenever you generate a new episode.
+                {t('overview.introduction')}
               </p>
 
               <div className="space-y-2">
-                <h4 className="font-medium text-foreground">Episode profiles set the format</h4>
+                <h4 className="font-medium text-foreground">{t('overview.episodeProfiles.title')}</h4>
                 <ul className="list-disc space-y-1 pl-5">
-                  <li>Outline the number of segments and how the story flows</li>
-                  <li>Pick the language models used for briefing, outlining, and script writing</li>
-                  <li>Store default briefings so every episode starts with a consistent tone</li>
+                  <li>{t('overview.episodeProfiles.points.segments')}</li>
+                  <li>{t('overview.episodeProfiles.points.models')}</li>
+                  <li>{t('overview.episodeProfiles.points.briefings')}</li>
                 </ul>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-medium text-foreground">Speaker profiles bring voices to life</h4>
+                <h4 className="font-medium text-foreground">{t('overview.speakerProfiles.title')}</h4>
                 <ul className="list-disc space-y-1 pl-5">
-                  <li>Choose the text-to-speech provider and model</li>
-                  <li>Capture personality, backstory, and pronunciation notes per speaker</li>
-                  <li>Reuse the same host or guest voices across different episode formats</li>
+                  <li>{t('overview.speakerProfiles.points.tts')}</li>
+                  <li>{t('overview.speakerProfiles.points.details')}</li>
+                  <li>{t('overview.speakerProfiles.points.reuse')}</li>
                 </ul>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-medium text-foreground">Recommended workflow</h4>
+                <h4 className="font-medium text-foreground">{t('overview.workflow.title')}</h4>
                 <ol className="list-decimal space-y-1 pl-5">
-                  <li>Create speaker profiles for each voice you need</li>
-                  <li>Build episode profiles that reference those speakers by name</li>
-                  <li>Generate podcasts by selecting the episode profile that fits the story</li>
+                  <li>{t('overview.workflow.steps.createSpeakers')}</li>
+                  <li>{t('overview.workflow.steps.buildEpisodes')}</li>
+                  <li>{t('overview.workflow.steps.generate')}</li>
                 </ol>
                 <p className="text-xs text-muted-foreground/80">
-                  Episode profiles reference speaker profiles by name, so starting with speakers avoids
-                  missing voice assignments later.
+                  {t('overview.workflow.note')}
                 </p>
               </div>
             </div>
@@ -120,9 +120,9 @@ export function TemplatesTab() {
       {hasError ? (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Failed to load templates data</AlertTitle>
+          <AlertTitle>{t('errors.loadFailed.title')}</AlertTitle>
           <AlertDescription>
-            Ensure the API is running and try again. Some sections may be incomplete.
+            {t('errors.loadFailed.description')}
           </AlertDescription>
         </Alert>
       ) : null}
@@ -130,7 +130,7 @@ export function TemplatesTab() {
       {isLoading ? (
         <div className="flex items-center gap-3 rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin" />
-          Loading templates…
+          {t('loading')}
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">

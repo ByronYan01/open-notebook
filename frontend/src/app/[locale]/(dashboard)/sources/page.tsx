@@ -14,8 +14,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 export default function SourcesPage() {
+  const t = useTranslations('sources.page')
   const [sources, setSources] = useState<SourceListResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -71,8 +73,8 @@ export default function SourcesPage() {
       offsetRef.current += data.length
     } catch (err) {
       console.error('Failed to fetch sources:', err)
-      setError('Failed to load sources')
-      toast.error('Failed to load sources')
+      setError(t('errors.loadFailed'))
+      toast.error(t('errors.loadFailed'))
     } finally {
       setLoading(false)
       setLoadingMore(false)
@@ -216,9 +218,9 @@ export default function SourcesPage() {
   }
 
   const getSourceType = (source: SourceListResponse) => {
-    if (source.asset?.url) return 'Link'
-    if (source.asset?.file_path) return 'File'
-    return 'Text'
+    if (source.asset?.url) return t('types.link')
+    if (source.asset?.file_path) return t('types.file')
+    return t('types.text')
   }
 
   const handleRowClick = useCallback((index: number, sourceId: string) => {
@@ -236,13 +238,13 @@ export default function SourcesPage() {
 
     try {
       await sourcesApi.delete(deleteDialog.source.id)
-      toast.success('Source deleted successfully')
+      toast.success(t('delete.success'))
       // Remove the deleted source from the list
       setSources(prev => prev.filter(s => s.id !== deleteDialog.source?.id))
       setDeleteDialog({ open: false, source: null })
     } catch (err) {
       console.error('Failed to delete source:', err)
-      toast.error('Failed to delete source')
+      toast.error(t('delete.failed'))
     }
   }
 
@@ -271,8 +273,8 @@ export default function SourcesPage() {
       <AppShell>
         <EmptyState
           icon={FileText}
-          title="No sources yet"
-          description="Sources from all notebooks will appear here"
+          title={t('empty.title')}
+          description={t('empty.description')}
         />
       </AppShell>
     )
@@ -282,9 +284,9 @@ export default function SourcesPage() {
     <AppShell>
       <div className="flex flex-col h-full w-full max-w-none px-6 py-6">
         <div className="mb-6 flex-shrink-0">
-          <h1 className="text-3xl font-bold">All Sources</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="mt-2 text-muted-foreground">
-            Browse all sources across your notebooks. Use arrow keys to navigate and Enter to open.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -305,10 +307,10 @@ export default function SourcesPage() {
             <thead className="sticky top-0 bg-background z-10">
               <tr className="border-b bg-muted/50">
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Type
+                  {t('table.type')}
                 </th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
-                  Title
+                  {t('table.title')}
                 </th>
                 <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground hidden sm:table-cell">
                   <Button
@@ -317,7 +319,7 @@ export default function SourcesPage() {
                     onClick={() => toggleSort('created')}
                     className="h-8 px-2 hover:bg-muted"
                   >
-                    Created
+                    {t('table.created')}
                     <ArrowUpDown className={cn(
                       "ml-2 h-3 w-3",
                       sortBy === 'created' ? 'opacity-100' : 'opacity-30'
@@ -330,13 +332,13 @@ export default function SourcesPage() {
                   </Button>
                 </th>
                 <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground hidden md:table-cell">
-                  Insights
+                  {t('table.insights')}
                 </th>
                 <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground hidden lg:table-cell">
-                  Embedded
+                  {t('table.embedded')}
                 </th>
                 <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
-                  Actions
+                  {t('table.actions')}
                 </th>
               </tr>
             </thead>
@@ -364,7 +366,7 @@ export default function SourcesPage() {
                   <td className="h-12 px-4">
                     <div className="flex flex-col overflow-hidden">
                       <span className="font-medium truncate">
-                        {source.title || 'Untitled Source'}
+                        {source.title || t('untitled')}
                       </span>
                       {source.asset?.url && (
                         <span className="text-xs text-muted-foreground truncate">
@@ -381,7 +383,7 @@ export default function SourcesPage() {
                   </td>
                   <td className="h-12 px-4 text-center hidden lg:table-cell">
                     <Badge variant={source.embedded ? "default" : "secondary"} className="text-xs">
-                      {source.embedded ? "Yes" : "No"}
+                      {source.embedded ? t('table.yes') : t('table.no')}
                     </Badge>
                   </td>
                   <td className="h-12 px-4 text-right">
@@ -401,7 +403,7 @@ export default function SourcesPage() {
                   <td colSpan={6} className="h-16 text-center">
                     <div className="flex items-center justify-center">
                       <LoadingSpinner />
-                      <span className="ml-2 text-muted-foreground">Loading more sources...</span>
+                      <span className="ml-2 text-muted-foreground">{t('loadingMore')}</span>
                     </div>
                   </td>
                 </tr>
@@ -414,9 +416,9 @@ export default function SourcesPage() {
       <ConfirmDialog
         open={deleteDialog.open}
         onOpenChange={(open) => setDeleteDialog({ open, source: deleteDialog.source })}
-        title="Delete Source"
-        description={`Are you sure you want to delete "${deleteDialog.source?.title || 'this source'}"? This action cannot be undone.`}
-        confirmText="Delete"
+        title={t('delete.title')}
+        description={t('delete.description', { name: deleteDialog.source?.title || t('untitled') })}
+        confirmText={t('delete.confirm')}
         confirmVariant="destructive"
         onConfirm={handleDeleteConfirm}
       />

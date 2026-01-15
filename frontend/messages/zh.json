@@ -148,5 +148,707 @@
         "nameRequired": "名称为必填项"
       }
     }
+  },
+  "sources": {
+    "addButton": {
+      "label": "添加资源"
+    },
+    "steps": {
+      "notebooks": {
+        "title": "选择笔记本（可选）",
+        "description": "选择应该包含此资源的笔记本。您可以选择多个笔记本或将其留空。",
+        "empty": "未找到笔记本。"
+      },
+      "processing": {
+        "transformations": {
+          "title": "转换（可选）",
+          "description": "应用 AI 转换来分析和提取您内容的见解。",
+          "empty": "未找到转换。"
+        },
+        "settings": {
+          "title": "处理设置",
+          "description": "配置您的资源将如何被处理和存储。",
+          "embedding": {
+            "enable": {
+              "title": "启用搜索嵌入",
+              "description": "允许此资源在向量搜索和 AI 查询中被找到"
+            },
+            "always": {
+              "title": "自动启用嵌入",
+              "description": "您的设置配置为始终嵌入内容以进行向量搜索。您可以在设置中更改此项。"
+            },
+            "never": {
+              "title": "嵌入已禁用",
+              "description": "您的设置配置为跳过嵌入。向量搜索将不适用于此资源。您可以在设置中更改此项。"
+            }
+          }
+        }
+      },
+      "sourceType": {
+        "stepTitle": "资源类型",
+        "stepDescription": "选择您想要添加内容的方式",
+        "types": {
+          "link": {
+            "label": "链接",
+            "description": "添加网页或 URL",
+            "url": {
+              "label": "URL *",
+              "count": "{count} 个 URL",
+              "max": "最多 {max} 个",
+              "placeholder": "输入 URL，每行一个\nhttps://example.com/article1\nhttps://example.com/article2",
+              "hint": "粘贴多个 URL（每行一个）进行批量导入",
+              "errors": {
+                "title": "检测到无效的 URL：",
+                "line": "第 {line} 行",
+                "fix": "请修复或删除无效的 URL 以继续"
+              }
+            }
+          },
+          "upload": {
+            "label": "上传",
+            "description": "上传文档或文件",
+            "file": {
+              "label": "文件 *",
+              "count": "{count} 个文件",
+              "max": "最多 {max} 个",
+              "maxError": "每批次最多允许 {max} 个文件",
+              "hint": "选择多个文件进行批量导入。支持：文档（PDF、DOC、DOCX、PPT、XLS、EPUB、TXT、MD），媒体（MP4、MP3、WAV、M4A），图片（JPG、PNG），压缩包（ZIP）",
+              "selected": "已选择的文件：",
+              "size": "{size} KB"
+            }
+          },
+          "text": {
+            "label": "文本",
+            "description": "直接添加文本内容",
+            "content": {
+              "label": "文本内容 *",
+              "placeholder": "在此处粘贴或输入您的内容..."
+            }
+          }
+        },
+        "title": {
+          "optional": "标题（可选）",
+          "required": "标题 *",
+          "optionalDescription": "如果留空，将从内容生成标题",
+          "requiredDescription": "文本内容需要标题",
+          "placeholder": "为您的资源提供一个描述性标题"
+        },
+        "batch": {
+          "badge": "批量模式",
+          "indicator": "将处理 {count} 个{type}",
+          "description": "将为每个资源自动生成标题。相同的笔记本和转换将应用于所有项目。"
+        }
+      }
+    },
+    "page": {
+      "title": "所有资源",
+      "subtitle": "浏览笔记本中的所有资源。使用方向键导航，按 Enter 打开。",
+      "empty": {
+        "title": "还没有资源",
+        "description": "所有笔记本中的资源将显示在这里"
+      },
+      "errors": {
+        "loadFailed": "加载资源失败"
+      },
+      "types": {
+        "link": "链接",
+        "file": "文件",
+        "text": "文本"
+      },
+      "untitled": "未命名资源",
+      "loadingMore": "加载更多资源...",
+      "table": {
+        "type": "类型",
+        "title": "标题",
+        "created": "创建时间",
+        "insights": "见解",
+        "embedded": "已嵌入",
+        "actions": "操作",
+        "yes": "是",
+        "no": "否"
+      },
+      "delete": {
+        "title": "删除资源",
+        "description": "确定要删除\"{name}\"吗？此操作无法撤销。",
+        "confirm": "删除",
+        "success": "资源删除成功",
+        "failed": "删除资源失败"
+      }
+    },
+    "card": {
+      "untitled": "未命名资源",
+      "checking": "检查中...",
+      "insights": "见解",
+      "progress": "进度",
+      "removeFromNotebook": "从笔记本中移除",
+      "retry": "重试",
+      "delete": "删除资源",
+      "status": {
+        "processing": "处理中",
+        "preparing": "准备处理",
+        "queued": "排队中",
+        "waiting": "等待处理",
+        "beingProcessed": "正在处理",
+        "completed": "已完成",
+        "successfullyProcessed": "处理成功",
+        "failed": "失败",
+        "processingFailed": "处理失败"
+      }
+    },
+    "addDialog": {
+      "title": "添加新资源",
+      "description": "从链接、上传或文本添加内容到您的笔记本。",
+      "validation": {
+        "contentRequired": "请为所选资源类型提供所需的内容",
+        "titleRequired": "文本资源需要标题"
+      },
+      "wizard": {
+        "step1": {
+          "title": "资源和内容",
+          "description": "选择类型并添加内容"
+        },
+        "step2": {
+          "title": "组织",
+          "description": "选择笔记本"
+        },
+        "step3": {
+          "title": "处理",
+          "description": "选择转换和选项"
+        }
+      },
+      "processing": {
+        "batch": "正在处理 {count} 个资源...",
+        "single": "正在提交资源进行处理...",
+        "error": "创建资源时出错。请重试。",
+        "batchTitle": "批量处理",
+        "singleTitle": "处理资源",
+        "batchDescription": "正在处理 {count} 个资源。这可能需要几分钟。",
+        "singleDescription": "您的资源正在处理中。这可能需要几分钟。",
+        "default": "处理中...",
+        "completed": "已完成",
+        "failed": "失败",
+        "current": "当前"
+      },
+      "toast": {
+        "batchSuccess": "成功创建 {count} 个资源",
+        "batchFailed": "无法创建所有 {count} 个资源",
+        "batchPartial": "{success} 个成功，{failed} 个失败"
+      },
+      "buttons": {
+        "cancel": "取消",
+        "back": "返回",
+        "next": "下一步",
+        "done": "完成",
+        "creating": "创建中..."
+      }
+    },
+    "addExistingDialog": {
+      "title": "添加现有资源",
+      "description": "搜索并选择现有资源以添加到此笔记本",
+      "searchPlaceholder": "搜索资源...",
+      "loading": "加载资源中...",
+      "noResults": "未找到资源",
+      "linked": "已关联",
+      "added": "添加于",
+      "truncationWarning": "显示前 100 个资源。使用搜索功能查找特定资源。",
+      "selected": "已选择 {count} 个资源",
+      "buttons": {
+        "cancel": "取消",
+        "adding": "添加中...",
+        "addSelected": "添加所选"
+      }
+    }
+  },
+  "search": {
+    "page": {
+      "title": "提问和搜索",
+      "chooseMode": "选择模式",
+      "askOrSearchAria": "提问或搜索您的知识库",
+      "askTab": "提问（测试版）",
+      "searchTab": "搜索"
+    },
+    "ask": {
+      "title": "询问您的知识库（测试版）",
+      "description": "LLM 将根据您知识库中的文档回答您的问题。",
+      "questionLabel": "问题",
+      "questionPlaceholder": "输入您的问题...",
+      "questionAria": "输入您的问题以询问知识库",
+      "submitHint": "按 Cmd/Ctrl+Enter 提交",
+      "noEmbeddingModel": "您无法使用此功能，因为您没有选择嵌入模型。请在模型页面中设置一个。",
+      "usingCustomModels": "使用自定义模型",
+      "usingDefaultModels": "使用默认模型",
+      "advanced": "高级",
+      "modelStrategy": "策略",
+      "modelAnswer": "回答",
+      "modelFinal": "最终",
+      "processing": "处理中...",
+      "askButton": "提问",
+      "saveToNotebooks": "保存到笔记本"
+    },
+    "search": {
+      "title": "搜索",
+      "description": "在您的知识库中搜索特定关键词或概念",
+      "queryPlaceholder": "输入搜索查询...",
+      "queryAria": "输入搜索查询",
+      "searchButton": "搜索",
+      "searchAria": "搜索知识库",
+      "submitHint": "按 Enter 搜索",
+      "searchTypeLabel": "搜索类型",
+      "noEmbeddingModelWarning": "向量搜索需要嵌入模型。仅文本搜索可用。",
+      "textSearch": "文本搜索",
+      "vectorSearch": "向量搜索",
+      "searchInLabel": "搜索范围",
+      "searchSources": "搜索资源",
+      "searchNotes": "搜索笔记",
+      "resultsCount": "找到 {count} 个结果",
+      "searchTypeBadge": "{type} 搜索",
+      "noResults": "未找到\"{query}\"的结果",
+      "matches": "匹配项 ({count})"
+    },
+    "streamingResponse": {
+      "ariaLabel": "询问响应",
+      "strategy": {
+        "title": "策略",
+        "reasoning": "推理过程",
+        "searchTerms": "搜索词"
+      },
+      "individualAnswers": "单独回答 ({count})",
+      "finalAnswer": "最终回答",
+      "processing": "正在处理您的问题...",
+      "referenceNotFound": "此{type}未找到",
+      "type": {
+        "source": "资源",
+        "note": "笔记",
+        "insight": "见解"
+      }
+    },
+    "advancedModelsDialog": {
+      "title": "高级模型选择",
+      "description": "为提问流程的每个阶段选择特定模型",
+      "strategyModelLabel": "策略模型",
+      "strategyModelPlaceholder": "选择策略模型",
+      "answerModelLabel": "回答模型",
+      "answerModelPlaceholder": "选择回答模型",
+      "finalAnswerModelLabel": "最终回答模型",
+      "finalAnswerModelPlaceholder": "选择最终回答模型",
+      "cancel": "取消",
+      "saveChanges": "保存更改"
+    },
+    "saveToNotebooksDialog": {
+      "title": "保存到笔记本",
+      "description": "选择一个或多个笔记本以保存此回答",
+      "emptyMessage": "未找到笔记本。请先创建一个笔记本。",
+      "cancel": "取消",
+      "saving": "保存中...",
+      "saveButton": "保存到 {count} 个笔记本",
+      "success": "已保存到 {count} 个笔记本",
+      "errors": {
+        "selectAtLeastOne": "请至少选择一个笔记本",
+        "saveFailed": "保存回答失败"
+      }
+    }
+  },
+  "podcasts": {
+    "page": {
+      "title": "播客",
+      "description": "跟踪生成的剧集并管理可重用的模板。",
+      "chooseView": "选择视图",
+      "viewsAria": "播客视图",
+      "episodesTab": "剧集",
+      "templatesTab": "模板"
+    },
+    "episodesTab": {
+      "title": "剧集概览",
+      "description": "监控播客生成任务并查看最终成品。",
+      "generateButton": "生成播客",
+      "refreshButton": "刷新",
+      "summaryBadges": {
+        "total": "总计",
+        "processing": "处理中",
+        "completed": "已完成",
+        "failed": "失败",
+        "pending": "等待中"
+      },
+      "statusGroups": {
+        "running": {
+          "title": "正在处理",
+          "description": "正在积极生成资源的剧集。"
+        },
+        "pending": {
+          "title": "队列中 / 等待中",
+          "description": "已提交的剧集等待开始处理。"
+        },
+        "completed": {
+          "title": "已完成剧集",
+          "description": "准备查看、下载或发布。"
+        },
+        "failed": {
+          "title": "失败剧集",
+          "description": "在生成过程中遇到问题的剧集。"
+        }
+      },
+      "errors": {
+        "loadFailed": {
+          "title": "加载剧集失败",
+          "description": "我们无法获取最新的播客剧集。请稍后重试。"
+        }
+      },
+      "loading": "加载剧集中…",
+      "emptyState": "还没有播客剧集。从笔记本或资源聊天界面生成您的第一个剧集。"
+    },
+    "episodeCard": {
+      "profile": "配置文件",
+      "unknown": "未知",
+      "unknownProfile": "未知配置文件",
+      "details": "详情",
+      "audioError": "音频不可用",
+      "tabs": {
+        "summary": "摘要",
+        "outline": "大纲",
+        "transcript": "转录文本"
+      },
+      "sections": {
+        "episodeProfile": "剧集配置文件",
+        "speakerProfile": "演讲者配置文件",
+        "briefing": "简报"
+      },
+      "fields": {
+        "outlineModel": "大纲模型",
+        "transcriptModel": "转录模型",
+        "segments": "分段",
+        "voiceId": "语音 ID",
+        "backstory": "背景故事",
+        "personality": "个性"
+      },
+      "status": {
+        "processing": "处理中",
+        "completed": "已完成",
+        "failed": "失败",
+        "pending": "等待中",
+        "unknown": "未知"
+      },
+      "segmentFallback": "分段 {index}",
+      "noDescription": "未提供描述。",
+      "noOutline": "没有可用的大纲。",
+      "speakerFallback": "演讲者",
+      "noTranscript": "没有可用的转录文本。",
+      "delete": "删除",
+      "deleteDialog": {
+        "title": "删除剧集？",
+        "description": "这将永久删除 \"{name}\" 及其音频文件。",
+        "cancel": "取消",
+        "deleting": "删除中…",
+        "confirm": "删除"
+      }
+    },
+    "episodeProfilesPanel": {
+      "title": "剧集配置文件",
+      "description": "为您的节目定义可重用的生成设置。",
+      "createButton": "创建配置文件",
+      "speakerProfileRequired": "在添加剧集配置文件之前，请先创建演讲者配置文件。",
+      "emptyState": "还没有剧集配置文件。创建一个以启动播客生成。",
+      "noDescription": "未提供描述。",
+      "edit": "编辑",
+      "duplicate": "复制",
+      "delete": "删除",
+      "deleteDialog": {
+        "title": "删除配置文件？",
+        "description": "这将删除 \"{name}\"。现有剧集将保留其数据，但新剧集将不再使用此配置。",
+        "cancel": "取消",
+        "deleting": "删除中…",
+        "confirm": "删除"
+      },
+      "fields": {
+        "outlineModel": "大纲模型",
+        "transcriptModel": "转录模型",
+        "segments": "分段",
+        "speakerProfile": "演讲者配置文件",
+        "defaultBriefing": "默认简报"
+      }
+    },
+    "speakerProfilesPanel": {
+      "title": "演讲者配置文件",
+      "description": "为生成的剧集配置语音和个性。",
+      "createButton": "创建演讲者",
+      "emptyState": "还没有演讲者配置文件。创建一个以使剧集模板可用。",
+      "noDescription": "未提供描述。",
+      "usage": {
+        "used": "被 {count} 个剧集使用",
+        "unused": "未使用"
+      },
+      "fields": {
+        "voiceId": "语音 ID",
+        "backstory": "背景故事",
+        "personality": "个性"
+      },
+      "edit": "编辑",
+      "duplicate": "复制",
+      "delete": "删除",
+      "deleteDialog": {
+        "title": "删除演讲者配置文件？",
+        "description": "删除 \"{name}\" 无法撤销。",
+        "inUseWarning": "在删除之前，请从剧集配置文件中移除此演讲者。",
+        "cancel": "取消",
+        "deleting": "删除中…",
+        "confirm": "删除"
+      }
+    },
+    "templatesTab": {
+      "title": "模板工作区",
+      "description": "构建可重用的剧集和演讲者配置，以快速制作播客。",
+      "loading": "加载模板中…",
+      "errors": {
+        "loadFailed": {
+          "title": "加载模板数据失败",
+          "description": "确保 API 正在运行并重试。某些部分可能不完整。"
+        }
+      },
+      "overview": {
+        "title": "模板如何为播客生成提供动力",
+        "introduction": "模板将播客工作流程拆分为两个可重用的构建块。每当您生成新剧集时，都可以混合搭配它们。",
+        "episodeProfiles": {
+          "title": "剧集配置文件设定格式",
+          "points": {
+            "segments": "概述分段数量和故事流程",
+            "models": "选择用于简报、大纲和脚本编写的语言模型",
+            "briefings": "存储默认简报，使每个剧集都以一致的基调开始"
+          }
+        },
+        "speakerProfiles": {
+          "title": "演讲者配置文件赋予声音生命",
+          "points": {
+            "tts": "选择文本转语音提供商和模型",
+            "details": "为每个演讲者捕获个性、背景故事和发音注释",
+            "reuse": "在不同的剧集格式中重用相同的主播或嘉宾声音"
+          }
+        },
+        "workflow": {
+          "title": "推荐工作流程",
+          "steps": {
+            "createSpeakers": "为每个需要的语音创建演讲者配置文件",
+            "buildEpisodes": "构建按名称引用这些演讲者的剧集配置文件",
+            "generate": "通过选择适合故事的剧集配置文件来生成播客"
+          },
+          "note": "剧集配置文件按名称引用演讲者配置文件，因此从演讲者开始可以避免以后出现语音分配缺失。"
+        }
+      }
+    },
+    "generateDialog": {
+      "title": "生成播客剧集",
+      "description": "在生成新的播客剧集之前，选择要包含的内容并配置剧集详情。",
+      "sourceModes": {
+        "summary": "摘要",
+        "fullContent": "完整内容"
+      },
+      "contentSection": {
+        "title": "内容",
+        "description": "选择要包含在此剧集中的笔记本、资源和笔记。",
+        "itemsSelected": "个项目已选择",
+        "tokens": "令牌",
+        "chars": "字符",
+        "loading": "加载笔记本中",
+        "noNotebooks": "未找到笔记本。在生成播客之前，请创建笔记本并添加内容。",
+        "selectionSummary": "{sources} 个资源，{notes} 条笔记",
+        "noSelection": "未选择内容",
+        "sources": "资源",
+        "notes": "笔记",
+        "sourcesTitle": "资源",
+        "noSources": "此笔记本中没有可用的资源。",
+        "untitledSource": "未命名资源",
+        "link": "链接",
+        "file": "文件",
+        "embedded": "已嵌入",
+        "notEmbedded": "未嵌入",
+        "selectMode": "选择模式",
+        "notesTitle": "笔记",
+        "noNotes": "此笔记本中没有可用的笔记。",
+        "untitledNote": "未命名笔记",
+        "updated": "更新于 {date}"
+      },
+      "settingsSection": {
+        "title": "剧集设置",
+        "loading": "加载剧集配置文件中",
+        "noProfiles": "未找到剧集配置文件。在生成播客之前，请先创建剧集配置文件。",
+        "profileLabel": "剧集配置文件",
+        "profilePlaceholder": "选择剧集配置文件",
+        "usesSpeaker": "使用演讲者配置文件 {speaker}",
+        "nameLabel": "剧集名称",
+        "namePlaceholder": "例如：AI 与工作的未来",
+        "instructionsLabel": "附加说明",
+        "instructionsPlaceholder": "要附加到剧集简报的任何补充指导...",
+        "instructionsHint": "这些说明将附加到剧集配置文件的默认简报中。",
+        "generating": "生成剧集中…",
+        "submitButton": "生成播客",
+        "submitHint": "剧集生成开始后将出现在剧集列表中。刷新列表以监控进度。"
+      },
+      "errors": {
+        "profileRequired": {
+          "title": "需要剧集配置文件",
+          "description": "在生成播客之前选择剧集配置文件。"
+        },
+        "nameRequired": {
+          "title": "需要剧集名称",
+          "description": "为剧集提供名称。"
+        },
+        "addContext": {
+          "title": "添加内容",
+          "description": "选择至少一个资源或笔记以包含在剧集中。"
+        },
+        "generationFailed": {
+          "title": "播客生成失败",
+          "description": "请稍后重试。"
+        }
+      }
+    },
+    "forms": {
+      "episodeProfile": {
+        "createTitle": "创建剧集配置文件",
+        "editTitle": "编辑剧集配置文件",
+        "description": "定义剧集的生成方式以及默认使用的演讲者配置。",
+        "alerts": {
+          "noSpeakerProfiles": {
+            "title": "没有可用的演讲者配置文件",
+            "description": "在配置剧集配置文件之前，请先创建演讲者配置文件。"
+          },
+          "noLanguageModels": {
+            "title": "没有可用的语言模型",
+            "description": "在模型部分添加语言模型以配置大纲和转录生成。"
+          }
+        },
+        "sections": {
+          "speakerConfig": "演讲者配置",
+          "outlineGeneration": "大纲生成",
+          "transcriptGeneration": "转录生成"
+        },
+        "fields": {
+          "name": {
+            "label": "配置文件名称",
+            "placeholder": "技术讨论"
+          },
+          "segments": {
+            "label": "分段"
+          },
+          "description": {
+            "label": "描述",
+            "placeholder": "何时使用此配置文件的简要说明"
+          },
+          "speakerProfile": {
+            "label": "演讲者配置文件",
+            "placeholder": "选择演讲者配置文件"
+          },
+          "outlineProvider": {
+            "label": "提供商",
+            "placeholder": "选择提供商"
+          },
+          "outlineModel": {
+            "label": "模型",
+            "placeholder": "选择模型"
+          },
+          "transcriptProvider": {
+            "label": "提供商",
+            "placeholder": "选择提供商"
+          },
+          "transcriptModel": {
+            "label": "模型",
+            "placeholder": "选择模型"
+          },
+          "defaultBriefing": {
+            "label": "默认简报",
+            "placeholder": "概述此剧集格式的结构、基调和目标"
+          }
+        },
+        "buttons": {
+          "cancel": "取消",
+          "saving": "保存中…",
+          "creating": "创建中…",
+          "saveChanges": "保存更改",
+          "createProfile": "创建配置文件"
+        },
+        "errors": {
+          "nameRequired": "需要配置文件名称",
+          "speakerProfileRequired": "需要演讲者配置文件",
+          "outlineProviderRequired": "需要大纲提供商",
+          "outlineModelRequired": "需要大纲模型",
+          "transcriptProviderRequired": "需要转录提供商",
+          "transcriptModelRequired": "需要转录模型",
+          "defaultBriefingRequired": "需要默认简报",
+          "segmentsInteger": "必须是整数",
+          "segmentsMin": "至少需要 3 个分段",
+          "segmentsMax": "最多 20 个分段"
+        }
+      },
+      "speakerProfile": {
+        "createTitle": "创建演讲者配置文件",
+        "editTitle": "编辑演讲者配置文件",
+        "description": "配置文本转语音设置，最多定义四个演讲者。",
+        "alerts": {
+          "noTtsModels": {
+            "title": "没有可用的文本转语音模型",
+            "description": "在创建演讲者配置文件之前，请在模型部分添加 TTS 模型。"
+          }
+        },
+        "fields": {
+          "profileName": {
+            "label": "配置文件名称",
+            "placeholder": "每周节目主持人"
+          },
+          "provider": {
+            "label": "提供商",
+            "placeholder": "选择提供商"
+          },
+          "model": {
+            "label": "模型",
+            "placeholder": "选择模型"
+          },
+          "description": {
+            "label": "描述",
+            "placeholder": "关于基调、品牌或用途的说明"
+          }
+        },
+        "speakersSection": {
+          "title": "演讲者",
+          "description": "为此配置文件配置一到四个语音。",
+          "addSpeaker": "添加演讲者",
+          "speaker": "演讲者 {index}",
+          "remove": "移除"
+        },
+        "speakersFields": {
+          "name": {
+            "label": "名称",
+            "placeholder": "主持人 1"
+          },
+          "voiceId": {
+            "label": "语音 ID",
+            "placeholder": "voice_123"
+          },
+          "backstory": {
+            "label": "背景故事",
+            "placeholder": "演讲者的简短传记或背景"
+          },
+          "personality": {
+            "label": "个性",
+            "placeholder": "描述风格和基调"
+          }
+        },
+        "buttons": {
+          "cancel": "取消",
+          "saving": "保存中…",
+          "creating": "创建中…",
+          "saveChanges": "保存更改",
+          "createProfile": "创建配置文件"
+        },
+        "errors": {
+          "nameRequired": "需要配置文件名称",
+          "providerRequired": "需要提供商",
+          "modelRequired": "需要模型",
+          "atLeastOneSpeaker": "至少需要一个演讲者",
+          "maxFourSpeakers": "最多可以配置 4 个演讲者",
+          "speakerNameRequired": "需要名称",
+          "voiceIdRequired": "需要语音 ID",
+          "backstoryRequired": "需要背景故事",
+          "personalityRequired": "需要个性"
+        }
+      }
+    }
   }
 }

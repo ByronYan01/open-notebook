@@ -13,7 +13,8 @@
 - [三、分类规则](#三分类规则)
 - [四、代码示例](#四代码示例)
 - [五、执行计划](#五执行计划)
-- [六、验收标准](#六验收标准)
+- [六、常见错误与避坑指南](#六常见错误与避坑指南-)
+- [七、验收标准](#七验收标准)
 
 ---
 
@@ -440,26 +441,209 @@ export function CreateNotebookDialog() {
 
 ---
 
-## 六、验收标准
+## 六、常见错误与避坑指南 ⚠️
 
-### 6.1 覆盖率
+> **重要**: 本章节记录实际开发中发现的问题，避免重复踩坑
+
+### 6.1 翻译路径错误（相对路径问题）
+
+#### ❌ 错误示例
+
+```tsx
+// 文件: SourceTypeStep.tsx
+const t = useTranslations('sources.steps.sourceType')
+
+// 错误：路径不完整
+<Label>{t('link.url.label')}</Label>
+<Label>{t('upload.file.label')}</Label>
+<Label>{t('text.content.label')}</Label>
+```
+
+```json
+// messages/zh.json
+{
+  "sources": {
+    "steps": {
+      "sourceType": {
+        "types": {           // ← 注意这里是 types，不是直接 link
+          "link": {
+            "url": {
+              "label": "URL *"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**问题**: 组件中使用 `t('link.url.label')`，但实际路径应该是 `t('types.link.url.label')`，因为命名空间是 `sources.steps.sourceType`，相对路径应该从 `types` 开始。
+
+#### ✅ 正确示例
+
+```tsx
+// 文件: SourceTypeStep.tsx
+const t = useTranslations('sources.steps.sourceType')
+
+// 正确：使用完整的相对路径
+<Label>{t('types.link.url.label')}</Label>
+<Label>{t('types.upload.file.label')}</Label>
+<Label>{t('types.text.content.label')}</Label>
+```
+
+#### 验证方法
+
+1. **在组件中确定命名空间**:
+   ```tsx
+   const t = useTranslations('sources.steps.sourceType')
+   ```
+
+2. **在 JSON 文件中查找完整路径**:
+   ```json
+   sources.steps.sourceType.types.link.url.label
+   ```
+
+3. **计算相对路径** (去掉命名空间部分):
+   ```
+   完整路径: sources.steps.sourceType.types.link.url.label
+   命名空间: sources.steps.sourceType
+   相对路径: types.link.url.label
+   ```
+
+4. **验证代码中的调用**:
+   ```tsx
+   t('types.link.url.label')  // ✅ 正确
+   ```
+
+### 6.2 JSON 对象中的重复键冲突
+
+#### ❌ 错误示例
+
+```json
+// messages/zh.json
+{
+  "sources": {
+    "steps": {
+      "sourceType": {
+        "title": "资源类型",           // ❌ 第一个 title
+        "description": "选择您想要添加内容的方式",
+        "types": { ... },
+        "title": {                    // ❌ 第二个 title - 覆盖了第一个！
+          "optional": "标题（可选）",
+          "required": "标题 *"
+        },
+        "batch": { ... }
+      }
+    }
+  }
+}
+```
+
+**问题**: JSON 对象中同一个层级不能有两个相同的键。第二个 `"title"` 会完全覆盖第一个 `"title"`，导致 `"资源类型"` 这个翻译丢失。
+
+#### ✅ 正确示例
+
+```json
+// messages/zh.json
+{
+  "sources": {
+    "steps": {
+      "sourceType": {
+        "stepTitle": "资源类型",           // ✅ 重命名为 stepTitle
+        "stepDescription": "选择您想要添加内容的方式",
+        "types": { ... },
+        "title": {                        // ✅ 保留 title 用于标题输入字段
+          "optional": "标题（可选）",
+          "required": "标题 *",
+          "optionalDescription": "如果留空，将从内容生成标题",
+          "requiredDescription": "文本内容需要标题",
+          "placeholder": "为您的资源提供一个描述性标题"
+        },
+        "batch": { ... }
+      }
+    }
+  }
+}
+```
+
+```tsx
+// 对应的组件代码也要修改
+<FormSection
+  title={t('stepTitle')}              // ✅ 使用重命名后的键
+  description={t('stepDescription')}
+>
+
+// 标题输入字段仍然使用 title
+<Label>{t('title.optional')}</Label>  // ✅ 路径正确
+<Label>{t('title.required')}</Label>
+```
+
+#### 避免方法
+
+1. **添加新键前先检查**:
+   ```bash
+   # 在添加新键之前，搜索目标对象中是否已存在同名键
+   grep -n '"title"' frontend/messages/zh.json
+   ```
+
+2. **使用更具体的命名**:
+   - 步骤标题: `stepTitle`, `stepDescription`
+   - 表单字段: `title`, `description`, `content`
+   - 按钮文本: `buttonTitle`, `buttonLabel`
+
+3. **验证 JSON 有效性**:
+   ```bash
+   # 使用 Python 验证是否有重复键
+   python -c "
+   import json
+   with open('frontend/messages/zh.json', 'r', encoding='utf-8') as f:
+       data = json.load(f)
+   print('JSON is valid')
+   "
+   ```
+
+4. **使用工具检测**:
+   ```bash
+   # jq 工具会报错如果 JSON 格式不对
+   cat frontend/messages/zh.json | jq . > /dev/null
+   ```
+
+### 6.3 修改翻译键时的检查清单
+
+当需要修改或添加翻译键时，请按以下清单检查：
+
+- [ ] **1. 检查命名空间**: 确认组件使用的命名空间
+- [ ] **2. 检查 JSON 结构**: 在 messages 文件中查找完整路径
+- [ ] **3. 计算相对路径**: 从命名空间后的第一级开始计算
+- [ ] **4. 检查键重复**: 在目标对象级别搜索是否有同名键
+- [ ] **5. 同步修改代码**: 更新所有使用该翻译的组件
+- [ ] **6. 同步修改两个语言文件**: en.json 和 zh.json 都要更新
+- [ ] **7. 验证 JSON 格式**: 确保文件可以正确解析
+- [ ] **8. 测试语言切换**: 在应用中切换语言验证显示
+
+---
+
+## 七、验收标准
+
+### 7.1 覆盖率
 
 - ✅ 所有用户可见文本均已国际化
 - ❌ **排除**：日志、调试信息、API 路径、技术常量
 
-### 6.2 代码质量
+### 7.2 代码质量
 
 - ✅ 无 TypeScript 类型错误
 - ✅ 无遗漏的硬编码英文字符串
 - ✅ 命名规范符合本文档要求
 
-### 6.3 翻译质量
+### 7.3 翻译质量
 
 - ✅ 中英文对应 key 数量一致
 - ✅ 插值变量（如 `{count}`）在两种语言中都存在
 - ✅ 术语翻译一致性（如 Notebook → 笔记本）
 
-### 6.4 功能测试
+### 7.4 功能测试
 
 - ✅ 切换语言后所有页面显示正确
 - ✅ URL 从 `/en/xxx` 切换到 `/zh/xxx` 显示中文
@@ -502,9 +686,10 @@ export function CreateNotebookDialog() {
 
 ---
 
-**文档版本**: 1.1.0
+**文档版本**: 1.2.0
 **创建时间**: 2026-01-14
-**最后更新**: 2026-01-14
+**最后更新**: 2026-01-15
 **更新日志**:
+- v1.2.0: 新增"常见错误与避坑指南"章节（第六节），记录翻译路径错误和 JSON 重复键问题
 - v1.1.0: 新增 JSON 转义规则说明（1.4 节）
 - v1.0.0: 初始版本

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { InfoIcon, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { resolvePodcastAssetUrl } from '@/lib/api/podcasts'
 import { EpisodeStatus, PodcastEpisode } from '@/lib/types/podcasts'
@@ -38,51 +39,20 @@ interface EpisodeCardProps {
   deleting?: boolean
 }
 
-const STATUS_META: Record<
-  EpisodeStatus | 'unknown',
-  { label: string; className: string }
-> = {
-  running: {
-    label: 'Processing',
-    className: 'bg-amber-100 text-amber-800 border-amber-200',
-  },
-  processing: {
-    label: 'Processing',
-    className: 'bg-amber-100 text-amber-800 border-amber-200',
-  },
-  completed: {
-    label: 'Completed',
-    className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-  },
-  failed: {
-    label: 'Failed',
-    className: 'bg-red-100 text-red-800 border-red-200',
-  },
-  error: {
-    label: 'Failed',
-    className: 'bg-red-100 text-red-800 border-red-200',
-  },
-  pending: {
-    label: 'Pending',
-    className: 'bg-sky-100 text-sky-800 border-sky-200',
-  },
-  submitted: {
-    label: 'Pending',
-    className: 'bg-sky-100 text-sky-800 border-sky-200',
-  },
-  unknown: {
-    label: 'Unknown',
-    className: 'bg-muted text-muted-foreground border-transparent',
-  },
+type StatusMeta = Record<EpisodeStatus | 'unknown', { label: string; className: string }>
+
+interface StatusBadgeProps {
+  status: EpisodeStatus | null | undefined
+  statusMeta: StatusMeta
 }
 
-function StatusBadge({ status }: { status?: EpisodeStatus | null }) {
+function StatusBadge({ status, statusMeta }: StatusBadgeProps) {
   // Don't show badge for completed episodes
   if (status === 'completed') {
     return null
   }
 
-  const meta = STATUS_META[status ?? 'unknown']
+  const meta = statusMeta[status ?? 'unknown']
   return (
     <Badge
       variant="outline"
@@ -133,9 +103,48 @@ function extractTranscriptEntries(transcript: unknown): TranscriptEntry[] {
 }
 
 export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
+  const t = useTranslations('podcasts.episodeCard')
   const [audioSrc, setAudioSrc] = useState<string | undefined>()
   const [audioError, setAudioError] = useState<string | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
+
+  const STATUS_META: StatusMeta = useMemo(
+    () => ({
+      running: {
+        label: t('status.processing'),
+        className: 'bg-amber-100 text-amber-800 border-amber-200',
+      },
+      processing: {
+        label: t('status.processing'),
+        className: 'bg-amber-100 text-amber-800 border-amber-200',
+      },
+      completed: {
+        label: t('status.completed'),
+        className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      },
+      failed: {
+        label: t('status.failed'),
+        className: 'bg-red-100 text-red-800 border-red-200',
+      },
+      error: {
+        label: t('status.failed'),
+        className: 'bg-red-100 text-red-800 border-red-200',
+      },
+      pending: {
+        label: t('status.pending'),
+        className: 'bg-sky-100 text-sky-800 border-sky-200',
+      },
+      submitted: {
+        label: t('status.pending'),
+        className: 'bg-sky-100 text-sky-800 border-sky-200',
+      },
+      unknown: {
+        label: t('status.unknown'),
+        className: 'bg-muted text-muted-foreground border-transparent',
+      },
+    }),
+    [t]
+  )
 
   const outlineSegments = useMemo(() => extractOutlineSegments(episode.outline), [episode.outline])
   const transcriptEntries = useMemo(() => extractTranscriptEntries(episode.transcript), [episode.transcript])
@@ -183,7 +192,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
         setAudioSrc(revokeUrl)
       } catch (error) {
         console.error('Unable to load podcast audio', error)
-        setAudioError('Audio unavailable')
+        setAudioError(t('audioError'))
         setAudioSrc(undefined)
       }
     }
@@ -195,7 +204,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
         URL.revokeObjectURL(revokeUrl)
       }
     }
-  }, [episode.audio_url, episode.audio_file])
+  }, [episode.audio_url, episode.audio_file, t])
 
   const createdLabel = episode.created
     ? formatDistanceToNow(new Date(episode.created), {
@@ -216,10 +225,10 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
               <h3 className="text-base font-semibold text-foreground">
                 {episode.name}
               </h3>
-              <StatusBadge status={episode.job_status} />
+              <StatusBadge status={episode.job_status} statusMeta={STATUS_META} />
             </div>
             <p className="text-xs text-muted-foreground">
-              Profile: {episode.episode_profile?.name ?? 'Unknown'}
+              {t('profile')}: {episode.episode_profile?.name ?? t('unknown')}
               {createdLabel ? ` • Created ${createdLabel}` : ''}
             </p>
           </div>
@@ -227,14 +236,14 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
             <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
-                  <InfoIcon className="mr-2 h-4 w-4" /> Details
+                  <InfoIcon className="mr-2 h-4 w-4" /> {t('details')}
                 </Button>
               </DialogTrigger>
               <DialogContent className="w-[min(90vw,720px)] max-h-[85vh] overflow-hidden">
                 <DialogHeader>
                   <DialogTitle>{episode.name}</DialogTitle>
                   <DialogDescription>
-                    {episode.episode_profile?.name ?? 'Unknown profile'}
+                    {episode.episode_profile?.name ?? t('unknownProfile')}
                     {createdLabel ? ` • Created ${createdLabel}` : ''}
                   </DialogDescription>
                 </DialogHeader>
@@ -247,19 +256,19 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
 
                   <Tabs defaultValue="summary" className="h-[60vh] flex flex-col">
                     <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="summary">Summary</TabsTrigger>
-                      <TabsTrigger value="outline">Outline</TabsTrigger>
-                      <TabsTrigger value="transcript">Transcript</TabsTrigger>
+                      <TabsTrigger value="summary">{t('tabs.summary')}</TabsTrigger>
+                      <TabsTrigger value="outline">{t('tabs.outline')}</TabsTrigger>
+                      <TabsTrigger value="transcript">{t('tabs.transcript')}</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="summary" className="flex-1 overflow-hidden">
                       <ScrollArea className="h-full pr-4">
                         <div className="space-y-6">
                           <section className="space-y-2">
-                            <h4 className="text-sm font-semibold text-foreground">Episode Profile</h4>
+                            <h4 className="text-sm font-semibold text-foreground">{t('sections.episodeProfile')}</h4>
                             <div className="grid gap-2 text-sm md:grid-cols-2">
                               <div>
-                                <p className="text-muted-foreground">Outline Model</p>
+                                <p className="text-muted-foreground">{t('fields.outlineModel')}</p>
                                 <p>
                                   {episode.episode_profile?.outline_provider ?? '—'} /
                                   {' '}
@@ -267,7 +276,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                                 </p>
                               </div>
                               <div>
-                                <p className="text-muted-foreground">Transcript Model</p>
+                                <p className="text-muted-foreground">{t('fields.transcriptModel')}</p>
                                 <p>
                                   {episode.episode_profile?.transcript_provider ?? '—'} /
                                   {' '}
@@ -275,7 +284,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                                 </p>
                               </div>
                               <div>
-                                <p className="text-muted-foreground">Segments</p>
+                                <p className="text-muted-foreground">{t('fields.segments')}</p>
                                 <p>{episode.episode_profile?.num_segments ?? '—'}</p>
                               </div>
                             </div>
@@ -287,7 +296,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                           </section>
 
                           <section className="space-y-2">
-                            <h4 className="text-sm font-semibold text-foreground">Speaker Profile</h4>
+                            <h4 className="text-sm font-semibold text-foreground">{t('sections.speakerProfile')}</h4>
                             <p className="text-xs text-muted-foreground">
                               {episode.speaker_profile?.tts_provider ?? '—'} /{' '}
                               {episode.speaker_profile?.tts_model ?? '—'}
@@ -298,12 +307,12 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                                 className="rounded-md border bg-muted/20 p-3 text-xs"
                               >
                                 <p className="font-semibold text-foreground">{speaker.name}</p>
-                                <p className="text-muted-foreground">Voice ID: {speaker.voice_id}</p>
+                                <p className="text-muted-foreground">{t('fields.voiceId')}: {speaker.voice_id}</p>
                                 <p className="mt-2 whitespace-pre-wrap text-muted-foreground">
-                                  <span className="font-semibold">Backstory:</span> {speaker.backstory}
+                                  <span className="font-semibold">{t('fields.backstory')}:</span> {speaker.backstory}
                                 </p>
                                 <p className="mt-2 whitespace-pre-wrap text-muted-foreground">
-                                  <span className="font-semibold">Personality:</span> {speaker.personality}
+                                  <span className="font-semibold">{t('fields.personality')}:</span> {speaker.personality}
                                 </p>
                               </div>
                             ))}
@@ -311,7 +320,7 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
 
                           {episode.briefing ? (
                             <section className="space-y-2">
-                              <h4 className="text-sm font-semibold text-foreground">Briefing</h4>
+                              <h4 className="text-sm font-semibold text-foreground">{t('sections.briefing')}</h4>
                               <div className="rounded border bg-muted/30 p-3 text-xs whitespace-pre-wrap">
                                 {episode.briefing}
                               </div>
@@ -328,17 +337,17 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                             {outlineSegments.map((segment, index) => (
                               <div key={index} className="rounded border bg-muted/20 p-3 text-xs space-y-1">
                                 <div className="flex items-center justify-between gap-2">
-                                  <p className="font-semibold text-foreground">{segment.name ?? `Segment ${index + 1}`}</p>
+                                  <p className="font-semibold text-foreground">{segment.name ?? t('segmentFallback', { index: index + 1 })}</p>
                                   {segment.size ? (
                                     <Badge variant="outline" className="text-[10px] uppercase tracking-wide">{segment.size}</Badge>
                                   ) : null}
                                 </div>
-                                <p className="text-muted-foreground whitespace-pre-wrap">{segment.description ?? 'No description provided.'}</p>
+                                <p className="text-muted-foreground whitespace-pre-wrap">{segment.description ?? t('noDescription')}</p>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-xs text-muted-foreground">No outline available.</p>
+                          <p className="text-xs text-muted-foreground">{t('noOutline')}</p>
                         )}
                       </ScrollArea>
                     </TabsContent>
@@ -348,12 +357,12 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
                         {transcriptEntries.length > 0 ? (
                           transcriptEntries.map((entry, index) => (
                             <div key={index} className="rounded border bg-muted/20 p-3 text-xs space-y-1">
-                              <p className="font-semibold text-foreground">{entry.speaker ?? 'Speaker'}</p>
+                              <p className="font-semibold text-foreground">{entry.speaker ?? t('speakerFallback')}</p>
                               <p className="text-muted-foreground whitespace-pre-wrap">{entry.dialogue ?? ''}</p>
                             </div>
                           ))
                         ) : (
-                          <p className="text-xs text-muted-foreground">No transcript available.</p>
+                          <p className="text-xs text-muted-foreground">{t('noTranscript')}</p>
                         )}
                       </ScrollArea>
                     </TabsContent>
@@ -365,20 +374,20 @@ export function EpisodeCard({ episode, onDelete, deleting }: EpisodeCardProps) {
               <AlertDialogTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-destructive">
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
+                  {t('delete')}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete episode?</AlertDialogTitle>
+                  <AlertDialogTitle>{t('deleteDialog.title')}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will remove “{episode.name}” and its audio file permanently.
+                    {t('deleteDialog.description', { name: episode.name })}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
                   <AlertDialogAction onClick={handleDelete} disabled={deleting}>
-                    {deleting ? 'Deleting…' : 'Delete'}
+                    {deleting ? t('deleteDialog.deleting') : t('deleteDialog.confirm')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

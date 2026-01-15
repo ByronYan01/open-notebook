@@ -11,6 +11,7 @@ import remarkGfm from 'remark-gfm'
 import { convertReferencesToMarkdownLinks, createReferenceLinkComponent } from '@/lib/utils/source-references'
 import { useModalManager } from '@/lib/hooks/use-modal-manager'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 
 interface StrategyData {
   reasoning: string
@@ -30,6 +31,7 @@ export function StreamingResponse({
   answers,
   finalAnswer
 }: StreamingResponseProps) {
+  const t = useTranslations('search.streamingResponse')
   const [strategyOpen, setStrategyOpen] = useState(false)
   const [answersOpen, setAnswersOpen] = useState(false)
   const { openModal } = useModalManager()
@@ -43,8 +45,8 @@ export function StreamingResponse({
       // The modal component itself will handle displaying "not found" states.
       // This try-catch is here for future enhancements or unexpected errors.
     } catch {
-      const typeLabel = type === 'source_insight' ? 'insight' : type
-      toast.error(`This ${typeLabel} could not be found`)
+      const typeLabel = type === 'source_insight' ? t('type.insight') : t(`type.${type}` as any)
+      toast.error(t('referenceNotFound', { type: typeLabel }))
     }
   }
 
@@ -56,7 +58,7 @@ export function StreamingResponse({
     <div
       className="space-y-4 mt-6 max-h-[60vh] overflow-y-auto pr-2"
       role="region"
-      aria-label="Ask response"
+      aria-label={t('ariaLabel')}
       aria-live="polite"
       aria-busy={isStreaming}
     >
@@ -68,7 +70,7 @@ export function StreamingResponse({
               <CollapsibleTrigger className="flex items-center justify-between w-full hover:opacity-80">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-primary" />
-                  Strategy
+                  {t('strategy.title')}
                 </CardTitle>
                 <ChevronDown className={`h-4 w-4 transition-transform ${strategyOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
@@ -76,12 +78,12 @@ export function StreamingResponse({
             <CollapsibleContent>
               <CardContent className="space-y-3 pt-0">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Reasoning:</p>
+                  <p className="text-sm text-muted-foreground mb-2">{t('strategy.reasoning')}:</p>
                   <p className="text-sm">{strategy.reasoning}</p>
                 </div>
                 {strategy.searches.length > 0 && (
                   <div>
-                    <p className="text-sm text-muted-foreground mb-2">Search Terms:</p>
+                    <p className="text-sm text-muted-foreground mb-2">{t('strategy.searchTerms')}:</p>
                     <div className="space-y-2">
                       {strategy.searches.map((search, i) => (
                         <div key={i} className="flex items-start gap-2">
@@ -109,7 +111,7 @@ export function StreamingResponse({
               <CollapsibleTrigger className="flex items-center justify-between w-full hover:opacity-80">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Lightbulb className="h-4 w-4 text-primary" />
-                  Individual Answers ({answers.length})
+                  {t('individualAnswers', { count: answers.length })}
                 </CardTitle>
                 <ChevronDown className={`h-4 w-4 transition-transform ${answersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
@@ -133,7 +135,7 @@ export function StreamingResponse({
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-primary" />
-              Final Answer
+              {t('finalAnswer')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -149,7 +151,7 @@ export function StreamingResponse({
       {isStreaming && !finalAnswer && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <LoadingSpinner size="sm" />
-          <span>Processing your question...</span>
+          <span>{t('processing')}</span>
         </div>
       )}
     </div>

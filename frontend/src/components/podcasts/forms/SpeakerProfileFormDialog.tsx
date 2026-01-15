@@ -6,6 +6,7 @@ import type { FieldErrorsImpl } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { SpeakerProfile } from '@/lib/types/podcasts'
 import {
@@ -34,21 +35,18 @@ import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 
 const speakerConfigSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  voice_id: z.string().min(1, 'Voice ID is required'),
-  backstory: z.string().min(1, 'Backstory is required'),
-  personality: z.string().min(1, 'Personality is required'),
+  name: z.string(),
+  voice_id: z.string(),
+  backstory: z.string(),
+  personality: z.string(),
 })
 
 const speakerProfileSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string(),
   description: z.string().optional(),
-  tts_provider: z.string().min(1, 'Provider is required'),
-  tts_model: z.string().min(1, 'Model is required'),
-  speakers: z
-    .array(speakerConfigSchema)
-    .min(1, 'At least one speaker is required')
-    .max(4, 'You can configure up to 4 speakers'),
+  tts_provider: z.string(),
+  tts_model: z.string(),
+  speakers: z.array(speakerConfigSchema),
 })
 
 export type SpeakerProfileFormValues = z.infer<typeof speakerProfileSchema>
@@ -75,6 +73,9 @@ export function SpeakerProfileFormDialog({
   modelOptions,
   initialData,
 }: SpeakerProfileFormDialogProps) {
+  const t = useTranslations('podcasts.forms.speakerProfile')
+  const tErrors = useTranslations('podcasts.forms.speakerProfile.errors')
+
   const createProfile = useCreateSpeakerProfile()
   const updateProfile = useUpdateSpeakerProfile()
 
@@ -103,6 +104,87 @@ export function SpeakerProfileFormDialog({
     }
   }, [initialData, modelOptions, providers])
 
+  const validationSchema = useMemo(
+    () =>
+      speakerProfileSchema.superRefine((data, ctx) => {
+        // 验证 name
+        if (!data.name || data.name.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('nameRequired'),
+            path: ['name'],
+          })
+        }
+
+        // 验证 tts_provider
+        if (!data.tts_provider || data.tts_provider.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('providerRequired'),
+            path: ['tts_provider'],
+          })
+        }
+
+        // 验证 tts_model
+        if (!data.tts_model || data.tts_model.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('modelRequired'),
+            path: ['tts_model'],
+          })
+        }
+
+        // 验证 speakers 数量
+        if (data.speakers.length < 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('atLeastOneSpeaker'),
+            path: ['speakers'],
+          })
+        }
+        if (data.speakers.length > 4) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('maxFourSpeakers'),
+            path: ['speakers'],
+          })
+        }
+
+        // 验证每个 speaker
+        data.speakers.forEach((speaker, index) => {
+          if (!speaker.name || speaker.name.trim().length === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: tErrors('speakerNameRequired'),
+              path: ['speakers', index, 'name'],
+            })
+          }
+          if (!speaker.voice_id || speaker.voice_id.trim().length === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: tErrors('voiceIdRequired'),
+              path: ['speakers', index, 'voice_id'],
+            })
+          }
+          if (!speaker.backstory || speaker.backstory.trim().length === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: tErrors('backstoryRequired'),
+              path: ['speakers', index, 'backstory'],
+            })
+          }
+          if (!speaker.personality || speaker.personality.trim().length === 0) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: tErrors('personalityRequired'),
+              path: ['speakers', index, 'personality'],
+            })
+          }
+        })
+      }),
+    [tErrors]
+  )
+
   const {
     control,
     register,
@@ -112,7 +194,7 @@ export function SpeakerProfileFormDialog({
     watch,
     formState: { errors },
   } = useForm<SpeakerProfileFormValues>({
-    resolver: zodResolver(speakerProfileSchema),
+    resolver: zodResolver(validationSchema),
     defaultValues: getDefaults(),
   })
 
@@ -141,7 +223,7 @@ export function SpeakerProfileFormDialog({
       return
     }
     reset(getDefaults())
-  }, [open, reset, getDefaults])
+  }, [open, reset, getDefaults, tErrors])
 
   useEffect(() => {
     if (!provider) {
@@ -155,7 +237,7 @@ export function SpeakerProfileFormDialog({
     if (!models.includes(currentModel)) {
       setValue('tts_model', models[0])
     }
-  }, [provider, currentModel, modelOptions, setValue])
+  }, [provider, currentModel, modelOptions, setValue, tErrors])
 
   const onSubmit = async (values: SpeakerProfileFormValues) => {
     const payload = {
@@ -184,18 +266,18 @@ export function SpeakerProfileFormDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? 'Edit Speaker Profile' : 'Create Speaker Profile'}
+            {isEdit ? t('editTitle') : t('createTitle')}
           </DialogTitle>
           <DialogDescription>
-            Configure text-to-speech settings and define up to four speakers.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
 
         {providers.length === 0 ? (
           <Alert className="bg-amber-50 text-amber-900">
-            <AlertTitle>No text-to-speech models available</AlertTitle>
+            <AlertTitle>{t('alerts.noTtsModels.title')}</AlertTitle>
             <AlertDescription>
-              Add TTS models in the Models section before creating a speaker profile.
+              {t('alerts.noTtsModels.description')}
             </AlertDescription>
           </Alert>
         ) : null}
@@ -203,22 +285,22 @@ export function SpeakerProfileFormDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-2">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Profile name *</Label>
-              <Input id="name" placeholder="Weekly show host" {...register('name')} />
+              <Label htmlFor="name">{t('fields.profileName.label')}</Label>
+              <Input id="name" placeholder={t('fields.profileName.placeholder')} {...register('name')} />
               {errors.name ? (
                 <p className="text-xs text-red-600">{errors.name.message}</p>
               ) : null}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tts_provider">Provider *</Label>
+              <Label htmlFor="tts_provider">{t('fields.provider.label')}</Label>
               <Controller
                 control={control}
                 name="tts_provider"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select provider" />
+                      <SelectValue placeholder={t('fields.provider.placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {providers.map((option) => (
@@ -236,14 +318,14 @@ export function SpeakerProfileFormDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="tts_model">Model *</Label>
+              <Label htmlFor="tts_model">{t('fields.model.label')}</Label>
               <Controller
                 control={control}
                 name="tts_model"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select model" />
+                      <SelectValue placeholder={t('fields.model.placeholder')} />
                     </SelectTrigger>
                     <SelectContent>
                       {availableModels.map((model) => (
@@ -261,11 +343,11 @@ export function SpeakerProfileFormDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('fields.description.label')}</Label>
               <Textarea
                 id="description"
                 rows={3}
-                placeholder="Notes about tone, brand, or usage"
+                placeholder={t('fields.description.placeholder')}
                 {...register('description')}
               />
             </div>
@@ -275,10 +357,10 @@ export function SpeakerProfileFormDialog({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Speakers
+                  {t('speakersSection.title')}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Configure between one and four voices for this profile.
+                  {t('speakersSection.description')}
                 </p>
               </div>
               <Button
@@ -288,7 +370,7 @@ export function SpeakerProfileFormDialog({
                 onClick={() => append({ ...EMPTY_SPEAKER })}
                 disabled={fields.length >= 4}
               >
-                <Plus className="mr-2 h-4 w-4" /> Add speaker
+                <Plus className="mr-2 h-4 w-4" /> {t('speakersSection.addSpeaker')}
               </Button>
             </div>
             <Separator />
@@ -296,7 +378,7 @@ export function SpeakerProfileFormDialog({
             {fields.map((field, index) => (
               <div key={field.id} className="rounded-lg border p-4 space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold">Speaker {index + 1}</p>
+                  <p className="text-sm font-semibold">{t('speakersSection.speaker', { index: index + 1 })}</p>
                   <Button
                     type="button"
                     variant="ghost"
@@ -305,15 +387,15 @@ export function SpeakerProfileFormDialog({
                     disabled={fields.length <= 1}
                     className="text-destructive"
                   >
-                    <Trash2 className="mr-2 h-4 w-4" /> Remove
+                    <Trash2 className="mr-2 h-4 w-4" /> {t('speakersSection.remove')}
                   </Button>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>Name *</Label>
+                    <Label>{t('speakersFields.name.label')}</Label>
                     <Input
                       {...register(`speakers.${index}.name` as const)}
-                      placeholder="Host 1"
+                      placeholder={t('speakersFields.name.placeholder')}
                     />
                     {errors.speakers?.[index]?.name ? (
                       <p className="text-xs text-red-600">
@@ -322,10 +404,10 @@ export function SpeakerProfileFormDialog({
                     ) : null}
                   </div>
                   <div className="space-y-2">
-                    <Label>Voice ID *</Label>
+                    <Label>{t('speakersFields.voiceId.label')}</Label>
                     <Input
                       {...register(`speakers.${index}.voice_id` as const)}
-                      placeholder="voice_123"
+                      placeholder={t('speakersFields.voiceId.placeholder')}
                     />
                     {errors.speakers?.[index]?.voice_id ? (
                       <p className="text-xs text-red-600">
@@ -335,10 +417,10 @@ export function SpeakerProfileFormDialog({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Backstory *</Label>
+                  <Label>{t('speakersFields.backstory.label')}</Label>
                   <Textarea
                     rows={3}
-                    placeholder="Short biography or context for the speaker"
+                    placeholder={t('speakersFields.backstory.placeholder')}
                     {...register(`speakers.${index}.backstory` as const)}
                   />
                   {errors.speakers?.[index]?.backstory ? (
@@ -348,10 +430,10 @@ export function SpeakerProfileFormDialog({
                   ) : null}
                 </div>
                 <div className="space-y-2">
-                  <Label>Personality *</Label>
+                  <Label>{t('speakersFields.personality.label')}</Label>
                   <Textarea
                     rows={3}
-                    placeholder="Describe style and tone"
+                    placeholder={t('speakersFields.personality.placeholder')}
                     {...register(`speakers.${index}.personality` as const)}
                   />
                   {errors.speakers?.[index]?.personality ? (
@@ -374,16 +456,16 @@ export function SpeakerProfileFormDialog({
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t('buttons.cancel')}
             </Button>
             <Button type="submit" disabled={disableSubmit}>
               {isSubmitting
                 ? isEdit
-                  ? 'Saving…'
-                  : 'Creating…'
+                  ? t('buttons.saving')
+                  : t('buttons.creating')
                 : isEdit
-                  ? 'Save changes'
-                  : 'Create profile'}
+                  ? t('buttons.saveChanges')
+                  : t('buttons.createProfile')}
             </Button>
           </div>
         </form>

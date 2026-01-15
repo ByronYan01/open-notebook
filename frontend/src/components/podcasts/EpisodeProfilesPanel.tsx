@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { Copy, Edit3, MoreVertical, Trash2, Users } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { EpisodeProfile, SpeakerProfile } from '@/lib/types/podcasts'
 import {
@@ -55,6 +56,7 @@ export function EpisodeProfilesPanel({
   speakerProfiles,
   modelOptions,
 }: EpisodeProfilesPanelProps) {
+  const t = useTranslations('podcasts.episodeProfilesPanel')
   const [createOpen, setCreateOpen] = useState(false)
   const [editProfile, setEditProfile] = useState<EpisodeProfile | null>(null)
 
@@ -63,7 +65,7 @@ export function EpisodeProfilesPanel({
 
   const sortedProfiles = useMemo(
     () =>
-      [...episodeProfiles].sort((a, b) => a.name.localeCompare(b.name, 'en')), 
+      [...episodeProfiles].sort((a, b) => a.name.localeCompare(b.name, 'en')),
     [episodeProfiles]
   )
 
@@ -73,25 +75,25 @@ export function EpisodeProfilesPanel({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Episode profiles</h2>
+          <h2 className="text-lg font-semibold">{t('title')}</h2>
           <p className="text-sm text-muted-foreground">
-            Define reusable generation settings for your shows.
+            {t('description')}
           </p>
         </div>
         <Button onClick={() => setCreateOpen(true)} disabled={disableCreate}>
-          Create profile
+          {t('createButton')}
         </Button>
       </div>
 
       {disableCreate ? (
         <p className="rounded-lg border border-dashed bg-amber-50 p-4 text-sm text-amber-900">
-          Create a speaker profile before adding an episode profile.
+          {t('speakerProfileRequired')}
         </p>
       ) : null}
 
       {sortedProfiles.length === 0 ? (
         <div className="rounded-lg border border-dashed bg-muted/30 p-10 text-center text-sm text-muted-foreground">
-          No episode profiles yet. Create one to kickstart podcast generation.
+          {t('emptyState')}
         </div>
       ) : (
         <div className="space-y-4">
@@ -109,7 +111,7 @@ export function EpisodeProfilesPanel({
                       {profile.name}
                     </CardTitle>
                     <CardDescription className="text-sm text-muted-foreground">
-                      {profile.description || 'No description provided.'}
+                      {profile.description || t('noDescription')}
                     </CardDescription>
                   </div>
                   <div className="flex items-center gap-1">
@@ -118,7 +120,7 @@ export function EpisodeProfilesPanel({
                       size="sm"
                       onClick={() => setEditProfile(profile)}
                     >
-                      <Edit3 className="mr-2 h-4 w-4" /> Edit
+                      <Edit3 className="mr-2 h-4 w-4" /> {t('edit')}
                     </Button>
                     <AlertDialog>
                       <DropdownMenu>
@@ -142,32 +144,31 @@ export function EpisodeProfilesPanel({
                             disabled={duplicateProfile.isPending}
                           >
                             <Copy className="h-4 w-4 mr-2" />
-                            Duplicate
+                            {t('duplicate')}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <AlertDialogTrigger asChild>
                             <DropdownMenuItem className="text-destructive focus:text-destructive">
                               <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
+                              {t('delete')}
                             </DropdownMenuItem>
                           </AlertDialogTrigger>
                         </DropdownMenuContent>
                       </DropdownMenu>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete profile?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('deleteDialog.title')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will remove “{profile.name}”. Existing episodes keep their
-                            data, but new ones will no longer use this configuration.
+                            {t('deleteDialog.description', { name: profile.name })}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t('deleteDialog.cancel')}</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => deleteProfile.mutate(profile.id)}
                             disabled={deleteProfile.isPending}
                           >
-                            {deleteProfile.isPending ? 'Deleting…' : 'Delete'}
+                            {deleteProfile.isPending ? t('deleteDialog.deleting') : t('deleteDialog.confirm')}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -179,7 +180,7 @@ export function EpisodeProfilesPanel({
                   <div className="grid gap-3 md:grid-cols-2">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Outline model
+                        {t('fields.outlineModel')}
                       </p>
                       <p className="text-foreground">
                         {profile.outline_provider} / {profile.outline_model}
@@ -187,7 +188,7 @@ export function EpisodeProfilesPanel({
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Transcript model
+                        {t('fields.transcriptModel')}
                       </p>
                       <p className="text-foreground">
                         {profile.transcript_provider} / {profile.transcript_model}
@@ -195,13 +196,13 @@ export function EpisodeProfilesPanel({
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Segments
+                        {t('fields.segments')}
                       </p>
                       <p className="text-foreground">{profile.num_segments}</p>
                     </div>
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Speaker profile
+                        {t('fields.speakerProfile')}
                       </p>
                       <div className="flex items-center gap-2 text-foreground">
                         <Users className="h-4 w-4" />
@@ -218,7 +219,7 @@ export function EpisodeProfilesPanel({
                   {profile.default_briefing ? (
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        Default briefing
+                        {t('fields.defaultBriefing')}
                       </p>
                       <p className="mt-1 whitespace-pre-wrap text-muted-foreground">
                         {profile.default_briefing}

@@ -6,6 +6,7 @@ import { CheckboxList } from "@/components/ui/checkbox-list"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Transformation } from "@/lib/types/transformations"
 import { SettingsResponse } from "@/lib/types/api"
+import { useTranslations } from "next-intl"
 
 interface CreateSourceFormData {
   type: 'link' | 'upload' | 'text'
@@ -36,6 +37,7 @@ export function ProcessingStep({
   loading = false,
   settings
 }: ProcessingStepProps) {
+  const t = useTranslations('sources.steps.processing')
   const transformationItems = transformations.map((transformation) => ({
     id: transformation.id,
     title: transformation.title,
@@ -45,21 +47,21 @@ export function ProcessingStep({
   return (
     <div className="space-y-8">
       <FormSection
-        title="Transformations (optional)"
-        description="Apply AI transformations to analyze and extract insights from your content."
+        title={t('transformations.title')}
+        description={t('transformations.description')}
       >
         <CheckboxList
           items={transformationItems}
           selectedIds={selectedTransformations}
           onToggle={onToggleTransformation}
           loading={loading}
-          emptyMessage="No transformations found."
+          emptyMessage={t('transformations.empty')}
         />
       </FormSection>
 
       <FormSection
-        title="Processing Settings"
-        description="Configure how your source will be processed and stored."
+        title={t('settings.title')}
+        description={t('settings.description')}
       >
         <div className="space-y-4">
           {settings?.default_embedding_option === 'ask' && (
@@ -74,9 +76,9 @@ export function ProcessingStep({
                     className="mt-0.5"
                   />
                   <div className="flex-1">
-                    <span className="text-sm font-medium block">Enable embedding for search</span>
+                    <span className="text-sm font-medium block">{t('settings.embedding.enable.title')}</span>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Allows this source to be found in vector searches and AI queries
+                      {t('settings.embedding.enable.description')}
                     </p>
                   </div>
                 </label>
@@ -89,10 +91,9 @@ export function ProcessingStep({
               <div className="flex items-start gap-3">
                 <div className="w-4 h-4 bg-primary rounded-full mt-0.5 flex-shrink-0"></div>
                 <div className="flex-1">
-                  <span className="text-sm font-medium block text-primary">Embedding enabled automatically</span>
+                  <span className="text-sm font-medium block text-primary">{t('settings.embedding.always.title')}</span>
                   <p className="text-xs text-primary mt-1">
-                    Your settings are configured to always embed content for vector search.
-                    You can change this in <span className="font-medium">Settings</span>.
+                    {t('settings.embedding.always.description')}
                   </p>
                 </div>
               </div>
@@ -104,10 +105,9 @@ export function ProcessingStep({
               <div className="flex items-start gap-3">
                 <div className="w-4 h-4 bg-muted-foreground rounded-full mt-0.5 flex-shrink-0"></div>
                 <div className="flex-1">
-                  <span className="text-sm font-medium block text-foreground">Embedding disabled</span>
+                  <span className="text-sm font-medium block text-foreground">{t('settings.embedding.never.title')}</span>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Your settings are configured to skip embedding. Vector search won&apos;t be available for this source.
-                    You can change this in <span className="font-medium">Settings</span>.
+                    {t('settings.embedding.never.description')}
                   </p>
                 </div>
               </div>
