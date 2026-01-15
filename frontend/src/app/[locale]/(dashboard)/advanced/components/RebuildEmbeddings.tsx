@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { useMutation } from '@tanstack/react-query'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,7 @@ import { embeddingApi } from '@/lib/api/embedding'
 import type { RebuildEmbeddingsRequest, RebuildStatusResponse } from '@/lib/api/embedding'
 
 export function RebuildEmbeddings() {
+  const t = useTranslations('advanced.rebuildEmbeddings')
   const [mode, setMode] = useState<'existing' | 'all'>('existing')
   const [includeSources, setIncludeSources] = useState(true)
   const [includeNotes, setIncludeNotes] = useState(true)
@@ -121,10 +123,10 @@ export function RebuildEmbeddings() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          🔄 Rebuild Embeddings
+          {t('title')}
         </CardTitle>
         <CardDescription>
-          Rebuild vector embeddings for your content. Use this when switching embedding models or fixing corrupted embeddings.
+          {t('description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -132,25 +134,23 @@ export function RebuildEmbeddings() {
         {!isRebuildActive && (
           <div className="space-y-6">
             <div className="space-y-3">
-              <Label htmlFor="mode">Rebuild Mode</Label>
+              <Label htmlFor="mode">{t('fields.mode.label')}</Label>
               <Select value={mode} onValueChange={(value) => setMode(value as 'existing' | 'all')}>
                 <SelectTrigger id="mode">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="existing">Existing</SelectItem>
-                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="existing">{t('fields.mode.options.existing')}</SelectItem>
+                  <SelectItem value="all">{t('fields.mode.options.all')}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
-                {mode === 'existing'
-                  ? 'Re-embed only items that already have embeddings (faster, for model switching)'
-                  : 'Re-embed existing items + create embeddings for items without any (slower, comprehensive)'}
+                {mode === 'existing' ? t('fields.mode.hint.existing') : t('fields.mode.hint.all')}
               </p>
             </div>
 
             <div className="space-y-3">
-              <Label>Include in Rebuild</Label>
+              <Label>{t('fields.include.label')}</Label>
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -159,7 +159,7 @@ export function RebuildEmbeddings() {
                     onCheckedChange={(checked) => setIncludeSources(checked === true)}
                   />
                   <Label htmlFor="sources" className="font-normal cursor-pointer">
-                    Sources
+                    {t('fields.include.options.sources')}
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -169,7 +169,7 @@ export function RebuildEmbeddings() {
                     onCheckedChange={(checked) => setIncludeNotes(checked === true)}
                   />
                   <Label htmlFor="notes" className="font-normal cursor-pointer">
-                    Notes
+                    {t('fields.include.options.notes')}
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -179,7 +179,7 @@ export function RebuildEmbeddings() {
                     onCheckedChange={(checked) => setIncludeInsights(checked === true)}
                   />
                   <Label htmlFor="insights" className="font-normal cursor-pointer">
-                    Insights
+                    {t('fields.include.options.insights')}
                   </Label>
                 </div>
               </div>
@@ -187,7 +187,7 @@ export function RebuildEmbeddings() {
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Please select at least one item type to rebuild
+                    {t('fields.include.validation.required')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -201,10 +201,10 @@ export function RebuildEmbeddings() {
               {rebuildMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Starting Rebuild...
+                  {t('buttons.starting')}
                 </>
               ) : (
-                '🚀 Start Rebuild'
+                t('buttons.start')
               )}
             </Button>
 
@@ -212,7 +212,7 @@ export function RebuildEmbeddings() {
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Failed to start rebuild: {(rebuildMutation.error as Error)?.message || 'Unknown error'}
+                  {t('errors.startFailed', { message: (rebuildMutation.error as Error)?.message || t('errors.unknown') })}
                 </AlertDescription>
               </Alert>
             )}
@@ -230,21 +230,21 @@ export function RebuildEmbeddings() {
                 {status.status === 'failed' && <XCircle className="h-5 w-5 text-red-500" />}
                 <div className="flex flex-col">
                   <span className="font-medium">
-                    {status.status === 'queued' && 'Queued'}
-                    {status.status === 'running' && 'Running...'}
-                    {status.status === 'completed' && 'Completed!'}
-                    {status.status === 'failed' && 'Failed'}
+                    {status.status === 'queued' && t('status.queued')}
+                    {status.status === 'running' && t('status.running')}
+                    {status.status === 'completed' && t('status.completed')}
+                    {status.status === 'failed' && t('status.failed')}
                   </span>
                   {status.status === 'running' && (
                     <span className="text-sm text-muted-foreground">
-                      You can leave this page as this will run in the background
+                      {t('status.backgroundHint')}
                     </span>
                   )}
                 </div>
               </div>
               {(status.status === 'completed' || status.status === 'failed') && (
                 <Button variant="outline" size="sm" onClick={handleReset}>
-                  Start New Rebuild
+                  {t('buttons.newRebuild')}
                 </Button>
               )}
             </div>
@@ -252,15 +252,15 @@ export function RebuildEmbeddings() {
             {progressData && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Progress</span>
+                  <span>{t('fields.progress.label')}</span>
                   <span className="font-medium">
-                    {processedItems}/{totalItems} items ({progressPercent.toFixed(1)}%)
+                    {t('fields.progress.value', { processed: processedItems, total: totalItems, percent: progressPercent.toFixed(1) })}
                   </span>
                 </div>
                 <Progress value={progressPercent} className="h-2" />
                 {failedItems > 0 && (
                   <p className="text-sm text-yellow-600">
-                    ⚠️ {failedItems} items failed to process
+                    {t('fields.progress.failed', { count: failedItems })}
                   </p>
                 )}
               </div>
@@ -269,21 +269,21 @@ export function RebuildEmbeddings() {
             {stats && (
               <div className="grid grid-cols-4 gap-4">
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Sources</p>
+                  <p className="text-sm text-muted-foreground">{t('fields.stats.sources')}</p>
                   <p className="text-2xl font-bold">{sourcesProcessed}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Notes</p>
+                  <p className="text-sm text-muted-foreground">{t('fields.stats.notes')}</p>
                   <p className="text-2xl font-bold">{notesProcessed}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Insights</p>
+                  <p className="text-sm text-muted-foreground">{t('fields.stats.insights')}</p>
                   <p className="text-2xl font-bold">{insightsProcessed}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Time</p>
+                  <p className="text-sm text-muted-foreground">{t('fields.stats.time')}</p>
                   <p className="text-2xl font-bold">
-                    {processingTimeSeconds !== undefined ? `${processingTimeSeconds.toFixed(1)}s` : '—'}
+                    {processingTimeSeconds !== undefined ? t('fields.stats.timeValue', { seconds: processingTimeSeconds.toFixed(1) }) : '—'}
                   </p>
                 </div>
               </div>
@@ -298,9 +298,9 @@ export function RebuildEmbeddings() {
 
             {status.started_at && (
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>Started: {new Date(status.started_at).toLocaleString()}</p>
+                <p>{t('fields.timestamps.started', { time: new Date(status.started_at).toLocaleString() })}</p>
                 {status.completed_at && (
-                  <p>Completed: {new Date(status.completed_at).toLocaleString()}</p>
+                  <p>{t('fields.timestamps.completed', { time: new Date(status.completed_at).toLocaleString() })}</p>
                 )}
               </div>
             )}
@@ -310,49 +310,49 @@ export function RebuildEmbeddings() {
         {/* Help Section */}
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="when">
-            <AccordionTrigger>When should I rebuild embeddings?</AccordionTrigger>
+            <AccordionTrigger>{t('help.when.title')}</AccordionTrigger>
             <AccordionContent className="space-y-2 text-sm">
-              <p><strong>You should rebuild embeddings when:</strong></p>
+              <p><strong>{t('help.when.intro')}</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Switching embedding models:</strong> If you change from one embedding model to another, you need to rebuild all embeddings to ensure consistency.</li>
-                <li><strong>Upgrading model versions:</strong> When updating to a newer version of your embedding model, rebuild to take advantage of improvements.</li>
-                <li><strong>Fixing corrupted embeddings:</strong> If you suspect some embeddings are corrupted or missing, rebuilding can restore them.</li>
-                <li><strong>After bulk imports:</strong> If you imported content without embeddings, use &quot;All&quot; mode to embed everything.</li>
+                <li><strong>{t('help.when.reasons.switching.title')}</strong> {t('help.when.reasons.switching.description')}</li>
+                <li><strong>{t('help.when.reasons.upgrading.title')}</strong> {t('help.when.reasons.upgrading.description')}</li>
+                <li><strong>{t('help.when.reasons.fixing.title')}</strong> {t('help.when.reasons.fixing.description')}</li>
+                <li><strong>{t('help.when.reasons.importing.title')}</strong> {t('help.when.reasons.importing.description')}</li>
               </ul>
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="time">
-            <AccordionTrigger>How long does rebuilding take?</AccordionTrigger>
+            <AccordionTrigger>{t('help.time.title')}</AccordionTrigger>
             <AccordionContent className="space-y-2 text-sm">
-              <p><strong>Processing time depends on:</strong></p>
+              <p><strong>{t('help.time.intro')}</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>Number of items to process</li>
-                <li>Embedding model speed</li>
-                <li>API rate limits (for cloud providers)</li>
-                <li>System resources</li>
+                <li>{t('help.time.factors.items')}</li>
+                <li>{t('help.time.factors.modelSpeed')}</li>
+                <li>{t('help.time.factors.rateLimits')}</li>
+                <li>{t('help.time.factors.resources')}</li>
               </ul>
-              <p className="mt-2"><strong>Typical rates:</strong></p>
+              <p className="mt-2"><strong>{t('help.time.typical.title')}</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li><strong>Local models</strong> (Ollama): Very fast, limited only by hardware</li>
-                <li><strong>Cloud APIs</strong> (OpenAI, Google): Moderate speed, may hit rate limits with large datasets</li>
-                <li><strong>Sources:</strong> Slower than notes/insights (creates multiple chunks per source)</li>
+                <li><strong>{t('help.time.typical.local.title')}</strong> {t('help.time.typical.local.description')}</li>
+                <li><strong>{t('help.time.typical.cloud.title')}</strong> {t('help.time.typical.cloud.description')}</li>
+                <li><strong>{t('help.time.typical.sources.title')}</strong> {t('help.time.typical.sources.description')}</li>
               </ul>
-              <p className="mt-2"><em>Example: Rebuilding 200 items might take 2-5 minutes with cloud APIs, or under 1 minute with local models.</em></p>
+              <p className="mt-2"><em>{t('help.time.example')}</em></p>
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="safe">
-            <AccordionTrigger>Is it safe to rebuild while using the app?</AccordionTrigger>
+            <AccordionTrigger>{t('help.safe.title')}</AccordionTrigger>
             <AccordionContent className="space-y-2 text-sm">
-              <p><strong>Yes, rebuilding is safe!</strong> The rebuild process:</p>
+              <p><strong>{t('help.safe.intro')}</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>✅ <strong>Is idempotent:</strong> Running multiple times produces the same result</li>
-                <li>✅ <strong>Doesn&apos;t delete content:</strong> Only replaces embeddings</li>
-                <li>✅ <strong>Can be run anytime:</strong> No need to stop other operations</li>
-                <li>✅ <strong>Handles errors gracefully:</strong> Failed items are logged and skipped</li>
+                <li>✅ <strong>{t('help.safe.features.idempotent.title')}</strong> {t('help.safe.features.idempotent.description')}</li>
+                <li>✅ <strong>{t('help.safe.features.noDelete.title')}</strong> {t('help.safe.features.noDelete.description')}</li>
+                <li>✅ <strong>{t('help.safe.features.anytime.title')}</strong> {t('help.safe.features.anytime.description')}</li>
+                <li>✅ <strong>{t('help.safe.features.errors.title')}</strong> {t('help.safe.features.errors.description')}</li>
               </ul>
-              <p className="mt-2">⚠️ <strong>However:</strong> Very large rebuilds (1000s of items) may temporarily slow down searches while processing.</p>
+              <p className="mt-2">⚠️ <strong>{t('help.safe.warning.title')}:</strong> {t('help.safe.warning.description')}</p>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

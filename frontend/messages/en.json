@@ -1095,5 +1095,253 @@
         "running": "Running..."
       }
     }
+  },
+  "settings": {
+    "page": {
+      "title": "Settings"
+    },
+    "form": {
+      "error": {
+        "title": "Failed to load settings",
+        "unknown": "An unexpected error occurred."
+      },
+      "helpMeChoose": "Help me choose",
+      "sections": {
+        "contentProcessing": {
+          "title": "Content Processing",
+          "description": "Configure how documents and URLs are processed",
+          "docEngine": {
+            "label": "Document Processing Engine",
+            "placeholder": "Select document processing engine",
+            "options": {
+              "auto": "Auto (Recommended)",
+              "docling": "Docling",
+              "simple": "Simple"
+            },
+            "help": {
+              "doclingName": "Docling",
+              "doclingDesc": "is a little slower but more accurate, specially if the documents contain tables and images.",
+              "simpleName": "Simple",
+              "simpleDesc": "will extract any content from the document without formatting it. It's ok for simple documents, but will lose quality in complex ones.",
+              "autoName": "Auto (recommended)",
+              "autoDesc": "will try to process through docling and default to simple."
+            }
+          },
+          "urlEngine": {
+            "label": "URL Processing Engine",
+            "placeholder": "Select URL processing engine",
+            "options": {
+              "auto": "Auto (Recommended)",
+              "firecrawl": "Firecrawl",
+              "jina": "Jina",
+              "simple": "Simple"
+            },
+            "help": {
+              "firecrawlName": "Firecrawl",
+              "firecrawlDesc": "is a paid service (with a free tier), and very powerful.",
+              "jinaName": "Jina",
+              "jinaDesc": "is a good option as well and also has a free tier.",
+              "simpleName": "Simple",
+              "simpleDesc": "will use basic HTTP extraction and will miss content on javascript-based websites.",
+              "autoName": "Auto (recommended)",
+              "autoDesc": "will try to use firecrawl (if API Key is present). Then, it will use Jina until reaches the limit (or will keep using Jina if you setup the API Key). It will fallback to simple, when none of the previous options is possible."
+            }
+          }
+        },
+        "embeddingSearch": {
+          "title": "Embedding and Search",
+          "description": "Configure search and embedding options",
+          "label": "Default Embedding Option",
+          "placeholder": "Select embedding option",
+          "options": {
+            "ask": "Ask",
+            "always": "Always",
+            "never": "Never"
+          },
+          "help": {
+            "intro": "Embedding the content will make it easier to find by you and by your AI agents. If you are running a local embedding model (Ollama, for example), you shouldn't worry about cost and just embed everything. For online providers, you might want to be careful only if you process a lot of content (like 100s of documents at a day).",
+            "always": "Choose always if you are running a local embedding model or if your content volume is not that big",
+            "ask": "Choose ask if you want to decide every time",
+            "never": "Choose never if you don't care about vector search or do not have an embedding provider.",
+            "reference": "As a reference, OpenAI's text-embedding-3-small costs about 0.02 for 1 million tokens -- which is about 30 times the Wikipedia page for Earth. With Gemini API, Text Embedding 004 is free with a rate limit of 1500 requests per minute."
+          }
+        },
+        "fileManagement": {
+          "title": "File Management",
+          "description": "Configure file handling and storage options",
+          "label": "Auto Delete Files",
+          "placeholder": "Select auto delete option",
+          "options": {
+            "yes": "Yes",
+            "no": "No"
+          },
+          "help": {
+            "intro": "Once your files are uploaded and processed, they are not required anymore. Most users should allow Open Notebook to delete uploaded files from the upload folder automatically. Choose no, ONLY if you are using Notebook as the primary storage location for those files (which you shouldn't be at all). This option will soon be deprecated in favor of always downloading the files.",
+            "yes": "Choose yes (recommended) to automatically delete uploaded files after processing",
+            "no": "Choose no only if you need to keep the original files in the upload folder"
+          }
+        }
+      },
+      "buttons": {
+        "save": "Save Settings",
+        "saving": "Saving..."
+      }
+    }
+  },
+  "advanced": {
+    "page": {
+      "title": "Advanced",
+      "description": "Advanced tools and utilities for power users"
+    },
+    "systemInfo": {
+      "title": "System Information",
+      "loading": "Loading...",
+      "currentVersion": "Current Version",
+      "latestVersion": "Latest Version",
+      "status": "Status",
+      "statuses": {
+        "updateAvailable": "Update Available",
+        "upToDate": "Up to Date"
+      },
+      "viewOnGitHub": "View on GitHub",
+      "checkFailed": "Unable to check for updates. GitHub may be unreachable.",
+      "unknown": "Unknown"
+    },
+    "rebuildEmbeddings": {
+      "title": "🔄 Rebuild Embeddings",
+      "description": "Rebuild vector embeddings for your content. Use this when switching embedding models or fixing corrupted embeddings.",
+      "fields": {
+        "mode": {
+          "label": "Rebuild Mode",
+          "options": {
+            "existing": "Existing",
+            "all": "All"
+          },
+          "hint": {
+            "existing": "Re-embed only items that already have embeddings (faster, for model switching)",
+            "all": "Re-embed existing items + create embeddings for items without any (slower, comprehensive)"
+          }
+        },
+        "include": {
+          "label": "Include in Rebuild",
+          "options": {
+            "sources": "Sources",
+            "notes": "Notes",
+            "insights": "Insights"
+          },
+          "validation": {
+            "required": "Please select at least one item type to rebuild"
+          }
+        },
+        "progress": {
+          "label": "Progress",
+          "value": "{processed}/{total} items ({percent}%)",
+          "failed": "⚠️ {count} items failed to process"
+        },
+        "stats": {
+          "sources": "Sources",
+          "notes": "Notes",
+          "insights": "Insights",
+          "time": "Time",
+          "timeValue": "{seconds}s"
+        },
+        "timestamps": {
+          "started": "Started: {time}",
+          "completed": "Completed: {time}"
+        }
+      },
+      "buttons": {
+        "start": "🚀 Start Rebuild",
+        "starting": "Starting Rebuild...",
+        "newRebuild": "Start New Rebuild"
+      },
+      "errors": {
+        "startFailed": "Failed to start rebuild: {message}",
+        "unknown": "Unknown error"
+      },
+      "status": {
+        "queued": "Queued",
+        "running": "Running...",
+        "completed": "Completed!",
+        "failed": "Failed",
+        "backgroundHint": "You can leave this page as this will run in the background"
+      },
+      "help": {
+        "when": {
+          "title": "When should I rebuild embeddings?",
+          "intro": "You should rebuild embeddings when:",
+          "reasons": {
+            "switching": {
+              "title": "Switching embedding models:",
+              "description": "If you change from one embedding model to another, you need to rebuild all embeddings to ensure consistency."
+            },
+            "upgrading": {
+              "title": "Upgrading model versions:",
+              "description": "When updating to a newer version of your embedding model, rebuild to take advantage of improvements."
+            },
+            "fixing": {
+              "title": "Fixing corrupted embeddings:",
+              "description": "If you suspect some embeddings are corrupted or missing, rebuilding can restore them."
+            },
+            "importing": {
+              "title": "After bulk imports:",
+              "description": "If you imported content without embeddings, use \"All\" mode to embed everything."
+            }
+          }
+        },
+        "time": {
+          "title": "How long does rebuilding take?",
+          "intro": "Processing time depends on:",
+          "factors": {
+            "items": "Number of items to process",
+            "modelSpeed": "Embedding model speed",
+            "rateLimits": "API rate limits (for cloud providers)",
+            "resources": "System resources"
+          },
+          "typical": {
+            "title": "Typical rates:",
+            "local": {
+              "title": "Local models",
+              "description": "(Ollama): Very fast, limited only by hardware"
+            },
+            "cloud": {
+              "title": "Cloud APIs",
+              "description": "(OpenAI, Google): Moderate speed, may hit rate limits with large datasets"
+            },
+            "sources": {
+              "title": "Sources:",
+              "description": "Slower than notes/insights (creates multiple chunks per source)"
+            }
+          },
+          "example": "Example: Rebuilding 200 items might take 2-5 minutes with cloud APIs, or under 1 minute with local models."
+        },
+        "safe": {
+          "title": "Is it safe to rebuild while using the app?",
+          "intro": "Yes, rebuilding is safe! The rebuild process:",
+          "features": {
+            "idempotent": {
+              "title": "Is idempotent:",
+              "description": "Running multiple times produces the same result"
+            },
+            "noDelete": {
+              "title": "Doesn't delete content:",
+              "description": "Only replaces embeddings"
+            },
+            "anytime": {
+              "title": "Can be run anytime:",
+              "description": "No need to stop other operations"
+            },
+            "errors": {
+              "title": "Handles errors gracefully:",
+              "description": "Failed items are logged and skipped"
+            }
+          },
+          "warning": {
+            "title": "However",
+            "description": "Very large rebuilds (1000s of items) may temporarily slow down searches while processing."
+          }
+        }
+      }
+    }
   }
 }

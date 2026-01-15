@@ -1095,5 +1095,253 @@
         "running": "运行中..."
       }
     }
+  },
+  "settings": {
+    "page": {
+      "title": "设置"
+    },
+    "form": {
+      "error": {
+        "title": "加载设置失败",
+        "unknown": "发生意外错误。"
+      },
+      "helpMeChoose": "帮我选择",
+      "sections": {
+        "contentProcessing": {
+          "title": "内容处理",
+          "description": "配置文档和 URL 的处理方式",
+          "docEngine": {
+            "label": "文档处理引擎",
+            "placeholder": "选择文档处理引擎",
+            "options": {
+              "auto": "自动（推荐）",
+              "docling": "Docling",
+              "simple": "简单"
+            },
+            "help": {
+              "doclingName": "Docling",
+              "doclingDesc": "稍慢但更准确，特别是当文档包含表格和图片时。",
+              "simpleName": "简单",
+              "simpleDesc": "将从文档中提取任何内容而不进行格式化。对于简单文档可以，但复杂文档会丢失质量。",
+              "autoName": "自动（推荐）",
+              "autoDesc": "将尝试通过 docling 处理，默认为简单模式。"
+            }
+          },
+          "urlEngine": {
+            "label": "URL 处理引擎",
+            "placeholder": "选择 URL 处理引擎",
+            "options": {
+              "auto": "自动（推荐）",
+              "firecrawl": "Firecrawl",
+              "jina": "Jina",
+              "simple": "简单"
+            },
+            "help": {
+              "firecrawlName": "Firecrawl",
+              "firecrawlDesc": "是付费服务（有免费套餐），功能非常强大。",
+              "jinaName": "Jina",
+              "jinaDesc": "也是一个不错的选择，也有免费套餐。",
+              "simpleName": "简单",
+              "simpleDesc": "将使用基本 HTTP 提取，会错过基于 JavaScript 的网站上的内容。",
+              "autoName": "自动（推荐）",
+              "autoDesc": "将尝试使用 firecrawl（如果存在 API 密钥）。然后使用 Jina 直到达到限制（如果您设置了 API 密钥，将继续使用 Jina）。当先前选项都不可用时，将回退到简单模式。"
+            }
+          }
+        },
+        "embeddingSearch": {
+          "title": "嵌入和搜索",
+          "description": "配置搜索和嵌入选项",
+          "label": "默认嵌入选项",
+          "placeholder": "选择嵌入选项",
+          "options": {
+            "ask": "询问",
+            "always": "始终",
+            "never": "从不"
+          },
+          "help": {
+            "intro": "嵌入内容将使您和您的 AI 代理更容易找到内容。如果您运行本地嵌入模型（例如 Ollama），您不需要担心成本，只需嵌入所有内容。对于在线提供商，只有在处理大量内容（例如每天数百个文档）时才需要小心。",
+            "always": "如果您运行本地嵌入模型或内容量不是很大，请选择始终",
+            "ask": "如果您想每次都决定，请选择询问",
+            "never": "如果您不关心向量搜索或没有嵌入提供商，请选择从不",
+            "reference": "参考：OpenAI 的 text-embedding-3-small 处理 100 万个令牌的成本约为 0.02 —— 这大约是地球维基百科页面的 30 倍。使用 Gemini API，Text Embedding 004 免费，每分钟限制 1500 个请求。"
+          }
+        },
+        "fileManagement": {
+          "title": "文件管理",
+          "description": "配置文件处理和存储选项",
+          "label": "自动删除文件",
+          "placeholder": "选择自动删除选项",
+          "options": {
+            "yes": "是",
+            "no": "否"
+          },
+          "help": {
+            "intro": "文件上传和处理后，就不再需要了。大多数用户应该允许 Open Notebook 自动从上传文件夹中删除上传的文件。仅当您使用 Notebook 作为这些文件的主要存储位置时才选择否（您根本不应该这样做）。此选项很快就会被弃用，改为始终下载文件。",
+            "yes": "选择是（推荐）在处理后自动删除上传的文件",
+            "no": "仅当您需要在上传文件夹中保留原始文件时，才选择否"
+          }
+        }
+      },
+      "buttons": {
+        "save": "保存设置",
+        "saving": "保存中..."
+      }
+    }
+  },
+  "advanced": {
+    "page": {
+      "title": "高级",
+      "description": "面向高级用户的高级工具和实用程序"
+    },
+    "systemInfo": {
+      "title": "系统信息",
+      "loading": "加载中...",
+      "currentVersion": "当前版本",
+      "latestVersion": "最新版本",
+      "status": "状态",
+      "statuses": {
+        "updateAvailable": "有可用更新",
+        "upToDate": "最新"
+      },
+      "viewOnGitHub": "在 GitHub 上查看",
+      "checkFailed": "无法检查更新。GitHub 可能无法访问。",
+      "unknown": "未知"
+    },
+    "rebuildEmbeddings": {
+      "title": "🔄 重建嵌入",
+      "description": "为内容重建向量嵌入。在切换嵌入模型或修复损坏的嵌入时使用此功能。",
+      "fields": {
+        "mode": {
+          "label": "重建模式",
+          "options": {
+            "existing": "现有",
+            "all": "全部"
+          },
+          "hint": {
+            "existing": "仅重新嵌入已有嵌入的项目（更快，用于模型切换）",
+            "all": "重新嵌入现有项目 + 为没有嵌入的项目创建嵌入（较慢，全面）"
+          }
+        },
+        "include": {
+          "label": "包含在重建中",
+          "options": {
+            "sources": "资源",
+            "notes": "笔记",
+            "insights": "洞察"
+          },
+          "validation": {
+            "required": "请至少选择一种要重建的项目类型"
+          }
+        },
+        "progress": {
+          "label": "进度",
+          "value": "{processed}/{total} 项 ({percent}%)",
+          "failed": "⚠️ {count} 项处理失败"
+        },
+        "stats": {
+          "sources": "资源",
+          "notes": "笔记",
+          "insights": "洞察",
+          "time": "时间",
+          "timeValue": "{seconds}秒"
+        },
+        "timestamps": {
+          "started": "开始：{time}",
+          "completed": "完成：{time}"
+        }
+      },
+      "buttons": {
+        "start": "🚀 开始重建",
+        "starting": "开始重建中...",
+        "newRebuild": "开始新重建"
+      },
+      "errors": {
+        "startFailed": "启动重建失败：{message}",
+        "unknown": "未知错误"
+      },
+      "status": {
+        "queued": "已排队",
+        "running": "运行中...",
+        "completed": "已完成！",
+        "failed": "失败",
+        "backgroundHint": "您可以离开此页面，因为它将在后台运行"
+      },
+      "help": {
+        "when": {
+          "title": "什么时候应该重建嵌入？",
+          "intro": "您应该在以下情况下重建嵌入：",
+          "reasons": {
+            "switching": {
+              "title": "切换嵌入模型时：",
+              "description": "如果您从一个嵌入模型切换到另一个，则需要重建所有嵌入以确保一致性。"
+            },
+            "upgrading": {
+              "title": "升级模型版本时：",
+              "description": "当更新到嵌入模型的较新版本时，重建以利用改进。"
+            },
+            "fixing": {
+              "title": "修复损坏的嵌入时：",
+              "description": "如果您怀疑某些嵌入已损坏或丢失，重建可以恢复它们。"
+            },
+            "importing": {
+              "title": "批量导入后：",
+              "description": "如果您导入的内容没有嵌入，请使用\"全部\"模式嵌入所有内容。"
+            }
+          }
+        },
+        "time": {
+          "title": "重建需要多长时间？",
+          "intro": "处理时间取决于：",
+          "factors": {
+            "items": "要处理的项目数量",
+            "modelSpeed": "嵌入模型速度",
+            "rateLimits": "API 速率限制（对于云提供商）",
+            "resources": "系统资源"
+          },
+          "typical": {
+            "title": "典型速率：",
+            "local": {
+              "title": "本地模型",
+              "description": "（Ollama）：非常快，仅受硬件限制"
+            },
+            "cloud": {
+              "title": "云 API",
+              "description": "（OpenAI、Google）：中等速度，大数据集可能会达到速率限制"
+            },
+            "sources": {
+              "title": "资源：",
+              "description": "比笔记/洞察慢（为每个资源创建多个块）"
+            }
+          },
+          "example": "示例：使用云 API 重建 200 个项目可能需要 2-5 分钟，而使用本地模型只需 1 分钟以下。"
+        },
+        "safe": {
+          "title": "在使用应用程序时重建是否安全？",
+          "intro": "是的，重建是安全的！重建过程：",
+          "features": {
+            "idempotent": {
+              "title": "是幂等的：",
+              "description": "多次运行产生相同的结果"
+            },
+            "noDelete": {
+              "title": "不删除内容：",
+              "description": "仅替换嵌入"
+            },
+            "anytime": {
+              "title": "可以随时运行：",
+              "description": "无需停止其他操作"
+            },
+            "errors": {
+              "title": "优雅地处理错误：",
+              "description": "失败的项目将被记录并跳过"
+            }
+          },
+          "warning": {
+            "title": "但是",
+            "description": "非常大的重建（数千个项目）可能会在处理时暂时减慢搜索速度。"
+          }
+        }
+      }
+    }
   }
 }
