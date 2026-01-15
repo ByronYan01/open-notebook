@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -9,6 +10,7 @@ import { ChevronDown, ChevronRight, Settings } from 'lucide-react'
 import { useDefaultPrompt, useUpdateDefaultPrompt } from '@/lib/hooks/use-transformations'
 
 export function DefaultPromptEditor() {
+  const t = useTranslations('transformations.defaultPrompt')
   const [isOpen, setIsOpen] = useState(false)
   const [prompt, setPrompt] = useState('')
   const { data: defaultPrompt, isLoading } = useDefaultPrompt()
@@ -33,9 +35,9 @@ export function DefaultPromptEditor() {
               <div className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
                 <div className="text-left">
-                  <CardTitle className="text-lg">Default Transformation Prompt</CardTitle>
+                  <CardTitle className="text-lg">{t('title')}</CardTitle>
                   <CardDescription>
-                    This will be added to all your transformation prompts
+                    {t('description')}
                   </CardDescription>
                 </div>
               </div>
@@ -52,16 +54,16 @@ export function DefaultPromptEditor() {
             <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your default transformation instructions..."
+              placeholder={t('placeholder')}
               className="min-h-[200px] font-mono text-sm"
               disabled={isLoading}
             />
             <div className="flex justify-end">
-              <Button 
+              <Button
                 onClick={handleSave}
                 disabled={isLoading || updateDefaultPrompt.isPending}
               >
-                Save
+                {t('saveButton')}
               </Button>
             </div>
           </CardContent>

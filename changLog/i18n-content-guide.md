@@ -609,18 +609,257 @@ const t = useTranslations('sources.steps.sourceType')
    cat frontend/messages/zh.json | jq . > /dev/null
    ```
 
-### 6.3 修改翻译键时的检查清单
+### 6.3 Zod 表单验证错误国际化 ⚠️ 重要
 
-当需要修改或添加翻译键时，请按以下清单检查：
+#### 问题描述
 
-- [ ] **1. 检查命名空间**: 确认组件使用的命名空间
-- [ ] **2. 检查 JSON 结构**: 在 messages 文件中查找完整路径
-- [ ] **3. 计算相对路径**: 从命名空间后的第一级开始计算
-- [ ] **4. 检查键重复**: 在目标对象级别搜索是否有同名键
-- [ ] **5. 同步修改代码**: 更新所有使用该翻译的组件
-- [ ] **6. 同步修改两个语言文件**: en.json 和 zh.json 都要更新
-- [ ] **7. 验证 JSON 格式**: 确保文件可以正确解析
-- [ ] **8. 测试语言切换**: 在应用中切换语言验证显示
+使用 Zod 的内置验证方法（如 `.min(1)`）配合 `.refine()` 添加自定义翻译时，自定义错误不会生效，而是显示 Zod 的默认英文错误：
+
+```
+Too small: expected string to have >= 1 characters
+```
+
+#### 根本原因
+
+**Zod 验证执行顺序问题**：当内置验证（如 `.min(1)`）失败时，Zod 会立即返回默认错误，不会继续执行后续的 `.refine()` 验证。
+
+#### ❌ 错误做法
+
+```tsx
+// ❌ 错误：内置验证会优先执行并返回默认错误
+const schema = z.object({
+  name: z.string().min(1),  // ← 这个先执行，返回 "Too small..."
+})
+
+const validationSchema = schema.refine(
+  (data) => data.name.trim().length > 0,
+  { path: ['name'], message: tErrors('nameRequired') }  // ← 不会执行
+)
+```
+
+#### ✅ 正确做法：使用 superRefine 完全接管验证
+
+**步骤 1**: 移除内置验证，只保留类型声明
+
+```tsx
+// ✅ 正确：移除 .min()、.max() 等内置验证
+const speakerProfileSchema = z.object({
+  name: z.string(),        // ← 只声明类型，不添加验证
+  tts_provider: z.string(),
+  tts_model: z.string(),
+  speakers: z.array(speakerConfigSchema),  // ← 移除 .min(1).max(4)
+})
+```
+
+**步骤 2**: 使用 `superRefine()` 统一处理所有验证
+
+```tsx
+const validationSchema = useMemo(
+  () =>
+    speakerProfileSchema.superRefine((data, ctx) => {
+      // 字符串字段验证
+      if (!data.name || data.name.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: tErrors('nameRequired'),
+          path: ['name'],
+        })
+      }
+
+      // 数字字段验证
+      if (!Number.isInteger(data.num_segments)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: tErrors('segmentsInteger'),
+          path: ['num_segments'],
+        })
+      } else if (data.num_segments < 3) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: tErrors('segmentsMin'),
+          path: ['num_segments'],
+        })
+      } else if (data.num_segments > 20) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: tErrors('segmentsMax'),
+          path: ['num_segments'],
+        })
+      }
+
+      // 数组字段验证
+      if (data.speakers.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: tErrors('atLeastOneSpeaker'),
+          path: ['speakers'],
+        })
+      }
+
+      // 嵌套对象验证
+      data.speakers.forEach((speaker, index) => {
+        if (!speaker.name || speaker.name.trim().length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: tErrors('speakerNameRequired'),
+            path: ['speakers', index, 'name'],
+          })
+        }
+      })
+    }),
+  [tErrors]  // ← 重要：将 tErrors 加入依赖数组
+)
+```
+
+**步骤 3**: 确保 `tErrors` 在依赖数组中
+
+```tsx
+// ❌ 错误：缺少依赖
+const validationSchema = useMemo(
+  () => speakerProfileSchema.superRefine(...),
+  []  // ← 缺少 tErrors，翻译不会更新
+)
+
+// ✅ 正确：包含依赖
+const validationSchema = useMemo(
+  () => speakerProfileSchema.superRefine(...),
+  [tErrors]  // ← 语言切换时重新生成验证 schema
+)
+```
+
+#### 完整示例对比
+
+```tsx
+// ❌ 错误示例
+const schema = z.object({
+  name: z.string().min(1, 'Required'),  // ← 内置验证
+  age: z.number().min(18).max(120),    // ← 内置验证
+})
+
+const validationSchema = schema
+  .refine((data) => data.name.trim(), { message: t('nameRequired') })
+  // ↑ 永远不会执行，因为 .min(1) 已经失败
+
+// ✅ 正确示例
+const schema = z.object({
+  name: z.string(),  // ← 仅类型声明
+  age: z.number(),   // ← 仅类型声明
+})
+
+const validationSchema = useMemo(() =>
+  schema.superRefine((data, ctx) => {
+    if (!data.name?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t('nameRequired'),
+        path: ['name'],
+      })
+    }
+    if (data.age < 18) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t('ageMin'),
+        path: ['age'],
+      })
+    }
+    if (data.age > 120) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: t('ageMax'),
+        path: ['age'],
+      })
+    }
+  }),
+  [t]  // ← 依赖数组
+)
+```
+
+#### 关键要点
+
+1. **移除所有内置验证**: `.min()`, `.max()`, `.email()` 等
+2. **使用 superRefine**: 统一在一个地方处理所有验证
+3. **添加 tErrors 到依赖**: 确保语言切换时验证消息也更新
+4. **使用 ctx.addIssue()**: 添加自定义验证错误，指定正确的 path
+
+### 6.4 翻译键命名不一致问题
+
+#### 问题描述
+
+不同组件使用不同的键命名转换逻辑，导致 IntlError 错误。
+
+#### 问题场景
+
+在 `models` 文件夹中发现：
+- **ModelTypeSection.tsx** 使用硬编码的 camelCase 键：`textToSpeech`、`speechToText`
+- **AddModelForm.tsx** 使用 `modelType.replace(/_/g, '')` 生成全小写键：`texttospeech`、`speechtotext`
+- JSON 文件中包含 camelCase 键：`textToSpeech`、`speechToText`
+
+结果：AddModelForm 找不到翻译键，抛出 IntlError。
+
+#### ❌ 错误做法
+
+```tsx
+// AddModelForm.tsx
+const nameKey = modelType.replace(/_/g, '')  // text_to_speech → texttospeech
+return {
+  displayName: t(`types.${nameKey}`),        // 查找 types.texttospeech
+  placeholder: t(`placeholders.${nameKey}`)   // 但 JSON 中是 textToSpeech
+}
+```
+
+```tsx
+// ModelTypeSection.tsx
+return {
+  title: tTypes('textToSpeech.title'),  // 使用 camelCase
+  description: tTypes('textToSpeech.description')
+}
+```
+
+#### ✅ 正确做法
+
+**统一命名规范**：所有翻译键使用 camelCase
+
+```tsx
+// AddModelForm.tsx - 修复后
+const nameKey = modelType.split('_')
+  .map((word, index) => index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1))
+  .join('')
+// text_to_speech → textToSpeech ✅
+// speech_to_text → speechToText ✅
+```
+
+#### 避免方法
+
+1. **统一命名转换函数**：
+   ```tsx
+   // 创建工具函数
+   function toCamelCase(str: string): string {
+     return str.split('_')
+       .map((word, index) => index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1))
+       .join('')
+   }
+   ```
+
+2. **命名规范**：
+   - ✅ 使用 camelCase：`textToSpeech`、`speechToText`、`textToSpeechModel`
+   - ❌ 避免全小写：`texttospeech`、`speechtotext`
+   - ❌ 避免混合命名：部分 camelCase、部分 lowercase
+
+3. **验证检查清单**：
+   - [ ] 检查所有组件的翻译键命名转换逻辑
+   - [ ] 确保 JSON 文件中的键命名与代码一致
+   - [ ] 跨组件验证相同类型的键是否使用相同命名
+
+#### 受影响的键对照表
+
+| 原始值 (snake_case) | 错误转换 (全小写) | 正确转换 (camelCase) |
+|-------------------|-----------------|-------------------|
+| `text_to_speech` | `texttospeech` ❌ | `textToSpeech` ✅ |
+| `speech_to_text` | `speechtotext` ❌ | `speechToText` ✅ |
+| `text_to_speech_model` | `texttospeechmodel` ❌ | `textToSpeechModel` ✅ |
+| `speech_to_text_model` | `speechtotextmodel` ❌ | `speechToTextModel` ✅ |
+
+### 6.5 修改翻译键时的检查清单
 
 ---
 

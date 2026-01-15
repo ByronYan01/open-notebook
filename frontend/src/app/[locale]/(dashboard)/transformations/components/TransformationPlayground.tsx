@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -20,11 +21,12 @@ interface TransformationPlaygroundProps {
 }
 
 export function TransformationPlayground({ transformations, selectedTransformation }: TransformationPlaygroundProps) {
+  const t = useTranslations('transformations.playground')
   const [selectedId, setSelectedId] = useState(selectedTransformation?.id || '')
   const [inputText, setInputText] = useState('')
   const [modelId, setModelId] = useState('')
   const [output, setOutput] = useState('')
-  
+
   const executeTransformation = useExecuteTransformation()
 
   const handleExecute = async () => {
@@ -47,18 +49,18 @@ export function TransformationPlayground({ transformations, selectedTransformati
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Playground</CardTitle>
+          <CardTitle>{t('title')}</CardTitle>
           <CardDescription>
-            Test your transformations on sample text before applying them to your sources
+            {t('description')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="transformation">Transformation</Label>
+              <Label htmlFor="transformation">{t('fields.transformation.label')}</Label>
               <Select value={selectedId} onValueChange={setSelectedId}>
                 <SelectTrigger id="transformation">
-                  <SelectValue placeholder="Select a transformation" />
+                  <SelectValue placeholder={t('fields.transformation.placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {transformations?.map((transformation) => (
@@ -72,29 +74,29 @@ export function TransformationPlayground({ transformations, selectedTransformati
 
             <div>
               <ModelSelector
-                label="Model"
+                label={t('fields.model.label')}
                 modelType="language"
                 value={modelId}
                 onChange={setModelId}
-                placeholder="Select a model"
+                placeholder={t('fields.model.placeholder')}
               />
             </div>
           </div>
 
           <div>
-            <Label htmlFor="input">Input Text</Label>
+            <Label htmlFor="input">{t('fields.input.label')}</Label>
             <Textarea
               id="input"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Enter some text to transform..."
+              placeholder={t('fields.input.placeholder')}
               rows={8}
               className="font-mono text-sm"
             />
           </div>
 
           <div className="flex justify-center">
-            <Button 
+            <Button
               onClick={handleExecute}
               disabled={!canExecute}
               size="lg"
@@ -102,12 +104,12 @@ export function TransformationPlayground({ transformations, selectedTransformati
               {executeTransformation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Running...
+                  {t('buttons.running')}
                 </>
               ) : (
                 <>
                   <Play className="h-4 w-4 mr-2" />
-                  Run Transformation
+                  {t('buttons.run')}
                 </>
               )}
             </Button>
@@ -115,7 +117,7 @@ export function TransformationPlayground({ transformations, selectedTransformati
 
           {output && (
             <div className="space-y-2">
-              <Label>Output</Label>
+              <Label>{t('fields.output.label')}</Label>
               <Card>
                 <ScrollArea className="h-[400px]">
                   <CardContent className="pt-6">

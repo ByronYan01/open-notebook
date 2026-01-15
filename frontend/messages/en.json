@@ -850,5 +850,250 @@
         }
       }
     }
+  },
+  "models": {
+    "page": {
+      "title": "Model Management",
+      "description": "Configure AI models for different purposes across Open Notebook",
+      "loadFailed": "Failed to load models data"
+    },
+    "providerStatus": {
+      "title": "AI Providers",
+      "description": "Configure providers through environment variables to enable their models.",
+      "configuredCount": "{current} of {total} configured",
+      "noModels": "No models",
+      "notConfigured": "Not configured",
+      "seeLess": "See less",
+      "seeAll": "See all {count} providers",
+      "learnMore": "Learn how to configure providers"
+    },
+    "defaultModels": {
+      "title": "Default Model Assignments",
+      "description": "Configure which models to use for different purposes across Open Notebook",
+      "missingRequired": "Missing required models: {models}. Open Notebook may not function properly without these.",
+      "requiredPlaceholder": "⚠️ Required - Select a model",
+      "placeholder": "Select a model",
+      "whichModel": "Which model should I choose?",
+      "configs": {
+        "chatModel": {
+          "label": "Chat Model",
+          "description": "Used for chat conversations"
+        },
+        "transformationModel": {
+          "label": "Transformation Model",
+          "description": "Used for summaries, insights, and transformations"
+        },
+        "toolsModel": {
+          "label": "Tools Model",
+          "description": "Used for function calling - OpenAI or Anthropic recommended"
+        },
+        "largeContextModel": {
+          "label": "Large Context Model",
+          "description": "Used for processing large documents - Gemini recommended"
+        },
+        "embeddingModel": {
+          "label": "Embedding Model",
+          "description": "Used for semantic search and vector embeddings"
+        },
+        "textToSpeechModel": {
+          "label": "Text-to-Speech Model",
+          "description": "Used for podcast generation"
+        },
+        "speechToTextModel": {
+          "label": "Speech-to-Text Model",
+          "description": "Used for audio transcription"
+        }
+      }
+    },
+    "embeddingChangeDialog": {
+      "title": "Embedding Model Change",
+      "description": "You are about to change your embedding model",
+      "fromTo": "from {from} to {to}",
+      "warning": {
+        "title": "⚠️ Important: Rebuild Required",
+        "message": "Changing your embedding model requires rebuilding all existing embeddings to maintain consistency. Without rebuilding, your searches may return incorrect or incomplete results."
+      },
+      "whatNext": {
+        "title": "What happens next",
+        "points": {
+          "update": "Your default embedding model will be updated",
+          "unchanged": "Existing embeddings will remain unchanged until rebuild",
+          "newContent": "New content will use the new embedding model",
+          "rebuildSoon": "You should rebuild embeddings as soon as possible"
+        }
+      },
+      "proceedQuestion": "Would you like to proceed to the Advanced page to start the rebuild now?",
+      "buttons": {
+        "cancel": "Cancel",
+        "changeOnly": "Change Model Only",
+        "changeAndRebuild": "Change & Go to Rebuild"
+      }
+    },
+    "modelTypeSection": {
+      "allProviders": "All",
+      "noProviderModels": "No {provider} models configured",
+      "noModelsConfigured": "No models configured",
+      "showLess": "Show less",
+      "showMore": "Show {count} more",
+      "types": {
+        "language": {
+          "title": "Language Models",
+          "description": "Chat, transformations, and text generation"
+        },
+        "embedding": {
+          "title": "Embedding Models",
+          "description": "Semantic search and vector embeddings"
+        },
+        "textToSpeech": {
+          "title": "Text-to-Speech",
+          "description": "Generate audio from text"
+        },
+        "speechToText": {
+          "title": "Speech-to-Text",
+          "description": "Transcribe audio to text"
+        }
+      },
+      "deleteDialog": {
+        "title": "Delete Model",
+        "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+        "confirm": "Delete"
+      }
+    },
+    "addModel": {
+      "button": "Add Model",
+      "noProviders": "No providers available for {type} models",
+      "dialogTitle": "Add {type} Model",
+      "dialogDescription": "Configure a new {type} model from available providers.",
+      "types": {
+        "language": "language",
+        "embedding": "embedding",
+        "textToSpeech": "text-to-speech",
+        "speechToText": "speech-to-text"
+      },
+      "placeholders": {
+        "language": "e.g., gpt-5-mini, claude, gemini",
+        "embedding": "e.g., text-embedding-3-small",
+        "textToSpeech": "e.g., tts-gpt-4o-mini-tts, tts-1-hd",
+        "speechToText": "e.g., whisper-1"
+      },
+      "fields": {
+        "provider": {
+          "label": "Provider",
+          "placeholder": "Select a provider",
+          "error": "Provider is required"
+        },
+        "name": {
+          "label": "Model Name",
+          "error": "Model name is required"
+        },
+        "azureHint": "For Azure, use the deployment name as the model name"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "adding": "Adding...",
+        "submit": "Add Model"
+      }
+    }
+  },
+  "transformations": {
+    "page": {
+      "title": "Transformations",
+      "description": "Transformations are prompts that will be used by the LLM to process a source and extract insights, summaries, etc.",
+      "workspaceLabel": "Choose a workspace",
+      "tabsAriaLabel": "Transformation views",
+      "tabs": {
+        "transformations": "Transformations",
+        "playground": "Playground"
+      }
+    },
+    "list": {
+      "title": "Your Transformations",
+      "emptyTitle": "No transformations yet",
+      "emptyDescription": "Create your first transformation to process and extract insights from your content.",
+      "createButton": "Create New Transformation"
+    },
+    "card": {
+      "defaultBadge": "default",
+      "playgroundButton": "Playground",
+      "editButton": "Edit",
+      "titleLabel": "Title",
+      "untitled": "Untitled",
+      "descriptionLabel": "Description",
+      "promptLabel": "Prompt",
+      "deleteDialog": {
+        "title": "Delete Transformation",
+        "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+        "confirm": "Delete"
+      }
+    },
+    "editor": {
+      "dialogTitle": {
+        "edit": "Edit transformation",
+        "create": "Create transformation"
+      },
+      "loading": "Loading transformation…",
+      "validation": {
+        "nameRequired": "Name is required",
+        "promptRequired": "Prompt is required"
+      },
+      "fields": {
+        "name": {
+          "label": "Name",
+          "placeholder": "Unique identifier, e.g. key_topics"
+        },
+        "title": {
+          "label": "Title",
+          "placeholder": "Displayed title, defaults to name"
+        },
+        "applyDefault": "Suggest by default on new sources",
+        "description": {
+          "label": "Description",
+          "placeholder": "Describe what this transformation does."
+        },
+        "prompt": {
+          "label": "Prompt",
+          "placeholder": "Write the prompt that will power this transformation...",
+          "hint": "Prompts should be written with the source content in mind. You can ask the model to summarise, extract insights, or produce structured outputs such as tables."
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "saving": "Saving…",
+        "creating": "Creating…",
+        "save": "Save Transformation",
+        "create": "Create Transformation"
+      }
+    },
+    "defaultPrompt": {
+      "title": "Default Transformation Prompt",
+      "description": "This will be added to all your transformation prompts",
+      "placeholder": "Enter your default transformation instructions...",
+      "saveButton": "Save"
+    },
+    "playground": {
+      "title": "Playground",
+      "description": "Test your transformations on sample text before applying them to your sources",
+      "fields": {
+        "transformation": {
+          "label": "Transformation",
+          "placeholder": "Select a transformation"
+        },
+        "model": {
+          "label": "Model",
+          "placeholder": "Select a model"
+        },
+        "input": {
+          "label": "Input Text",
+          "placeholder": "Enter some text to transform..."
+        },
+        "output": {
+          "label": "Output"
+        }
+      },
+      "buttons": {
+        "run": "Run Transformation",
+        "running": "Running..."
+      }
+    }
   }
 }

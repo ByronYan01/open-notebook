@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -16,16 +17,6 @@ import { Transformation } from '@/lib/types/transformations'
 import { useQueryClient } from '@tanstack/react-query'
 import { TRANSFORMATION_QUERY_KEYS } from '@/lib/hooks/use-transformations'
 
-const transformationSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  prompt: z.string().min(1, 'Prompt is required'),
-  apply_default: z.boolean().optional(),
-})
-
-type TransformationFormData = z.infer<typeof transformationSchema>
-
 interface TransformationEditorDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -33,6 +24,7 @@ interface TransformationEditorDialogProps {
 }
 
 export function TransformationEditorDialog({ open, onOpenChange, transformation }: TransformationEditorDialogProps) {
+  const t = useTranslations('transformations.editor')
   const isEditing = Boolean(transformation)
   const { data: fetchedTransformation, isLoading } = useTransformation(transformation?.id ?? '', {
     enabled: open && Boolean(transformation?.id),
@@ -40,6 +32,35 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
   const createTransformation = useCreateTransformation()
   const updateTransformation = useUpdateTransformation()
   const queryClient = useQueryClient()
+
+  // Dynamic schema generation with i18n support (遵循 i18n-content-guide.md 6.3 节)
+  const transformationSchema = useMemo(
+    () => z.object({
+      name: z.string(),
+      title: z.string().optional(),
+      description: z.string().optional(),
+      prompt: z.string(),
+      apply_default: z.boolean().optional(),
+    }).superRefine((data, ctx) => {
+      if (!data.name || data.name.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t('validation.nameRequired'),
+          path: ['name'],
+        })
+      }
+      if (!data.prompt || data.prompt.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: t('validation.promptRequired'),
+          path: ['prompt'],
+        })
+      }
+    }),
+    [t]
+  )
+
+  type TransformationFormData = z.infer<typeof transformationSchema>
 
   const {
     control,
@@ -111,19 +132,19 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-4xl w-full max-h-[90vh] overflow-hidden p-0">
         <DialogTitle className="sr-only">
-          {isEditing ? 'Edit transformation' : 'Create transformation'}
+          {isEditing ? t('dialogTitle.edit') : t('dialogTitle.create')}
         </DialogTitle>
         <form onSubmit={handleSubmit(onSubmit)} className="flex h-full flex-col">
           {isEditing && isLoading ? (
             <div className="flex-1 flex items-center justify-center py-10">
-              <span className="text-sm text-muted-foreground">Loading transformation…</span>
+              <span className="text-sm text-muted-foreground">{t('loading')}</span>
             </div>
           ) : (
             <>
               <div className="border-b px-6 py-4 space-y-4">
                 <div>
                   <Label htmlFor="transformation-name" className="text-sm font-medium">
-                    Name
+                    {t('fields.name.label')}
                   </Label>
                   <Controller
                     control={control}
@@ -132,7 +153,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                       <Input
                         id="transformation-name"
                         {...field}
-                        placeholder="Unique identifier, e.g. key_topics"
+                        placeholder={t('fields.name.placeholder')}
                       />
                     )}
                   />
@@ -144,7 +165,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="transformation-title" className="text-sm font-medium">
-                      Title
+                      {t('fields.title.label')}
                     </Label>
                     <Controller
                       control={control}
@@ -153,7 +174,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                         <Input
                           id="transformation-title"
                           {...field}
-                          placeholder="Displayed title, defaults to name"
+                          placeholder={t('fields.title.placeholder')}
                         />
                       )}
                     />
@@ -171,14 +192,14 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                       )}
                     />
                     <Label htmlFor="transformation-default" className="text-sm">
-                      Suggest by default on new sources
+                      {t('fields.applyDefault')}
                     </Label>
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="transformation-description" className="text-sm font-medium">
-                    Description
+                    {t('fields.description.label')}
                   </Label>
                   <Controller
                     control={control}
@@ -187,7 +208,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                       <Textarea
                         id="transformation-description"
                         {...field}
-                        placeholder="Describe what this transformation does."
+                        placeholder={t('fields.description.placeholder')}
                         rows={2}
                       />
                     )}
@@ -196,7 +217,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 py-4">
-                <Label className="text-sm font-medium">Prompt</Label>
+                <Label className="text-sm font-medium">{t('fields.prompt.label')}</Label>
                 <Controller
                   control={control}
                   name="prompt"
@@ -206,7 +227,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                       value={field.value}
                       onChange={field.onChange}
                       height={420}
-                      placeholder="Write the prompt that will power this transformation..."
+                      placeholder={t('fields.prompt.placeholder')}
                       className="rounded-md border"
                     />
                   )}
@@ -215,8 +236,7 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
                   <p className="text-sm text-red-600 mt-1">{errors.prompt.message}</p>
                 )}
                 <p className="text-xs text-muted-foreground mt-3">
-                  Prompts should be written with the source content in mind. You can ask the model to
-                  summarise, extract insights, or produce structured outputs such as tables.
+                  {t('fields.prompt.hint')}
                 </p>
               </div>
             </>
@@ -224,14 +244,14 @@ export function TransformationEditorDialog({ open, onOpenChange, transformation 
 
           <div className="border-t px-6 py-4 flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t('buttons.cancel')}
             </Button>
             <Button type="submit" disabled={isSaving || (isEditing && isLoading)}>
               {isSaving
-                ? isEditing ? 'Saving…' : 'Creating…'
+                ? isEditing ? t('buttons.saving') : t('buttons.creating')
                 : isEditing
-                  ? 'Save Transformation'
-                  : 'Create Transformation'}
+                  ? t('buttons.save')
+                  : t('buttons.create')}
             </Button>
           </div>
         </form>

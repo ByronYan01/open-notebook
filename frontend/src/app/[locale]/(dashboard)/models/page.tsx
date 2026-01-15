@@ -8,8 +8,10 @@ import { useModels, useModelDefaults, useProviders } from '@/lib/hooks/use-model
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslations } from 'next-intl'
 
 export default function ModelsPage() {
+  const t = useTranslations('models.page')
   const { data: models, isLoading: modelsLoading, refetch: refetchModels } = useModels()
   const { data: defaults, isLoading: defaultsLoading, refetch: refetchDefaults } = useModelDefaults()
   const { data: providers, isLoading: providersLoading, refetch: refetchProviders } = useProviders()
@@ -35,7 +37,7 @@ export default function ModelsPage() {
       <AppShell>
         <div className="p-6">
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Failed to load models data</p>
+            <p className="text-muted-foreground">{t('loadFailed')}</p>
           </div>
         </div>
       </AppShell>
@@ -48,9 +50,9 @@ export default function ModelsPage() {
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">Model Management</h1>
+              <h1 className="text-2xl font-bold">{t('title')}</h1>
               <p className="text-muted-foreground mt-1">
-                Configure AI models for different purposes across Open Notebook
+                {t('description')}
               </p>
             </div>
             <Button variant="outline" size="sm" onClick={handleRefresh}>
@@ -67,27 +69,27 @@ export default function ModelsPage() {
 
           {/* Model Types */}
           <div className="grid gap-6 lg:grid-cols-2">
-            <ModelTypeSection 
-              type="language" 
-              models={models} 
+            <ModelTypeSection
+              type="language"
+              models={models}
               providers={providers}
               isLoading={modelsLoading}
             />
-            <ModelTypeSection 
-              type="embedding" 
-              models={models} 
+            <ModelTypeSection
+              type="embedding"
+              models={models}
               providers={providers}
               isLoading={modelsLoading}
             />
-            <ModelTypeSection 
-              type="text_to_speech" 
-              models={models} 
+            <ModelTypeSection
+              type="text_to_speech"
+              models={models}
               providers={providers}
               isLoading={modelsLoading}
             />
-            <ModelTypeSection 
-              type="speech_to_text" 
-              models={models} 
+            <ModelTypeSection
+              type="speech_to_text"
+              models={models}
               providers={providers}
               isLoading={modelsLoading}
             />

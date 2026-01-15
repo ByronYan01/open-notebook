@@ -10,6 +10,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { useDeleteModel } from '@/lib/hooks/use-models'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface ModelTypeSectionProps {
   type: 'language' | 'embedding' | 'text_to_speech' | 'speech_to_text'
@@ -21,6 +22,9 @@ interface ModelTypeSectionProps {
 const COLLAPSED_ITEM_COUNT = 5
 
 export function ModelTypeSection({ type, models, providers, isLoading }: ModelTypeSectionProps) {
+  const t = useTranslations('models.modelTypeSection')
+  const tTypes = useTranslations('models.modelTypeSection.types')
+
   const [deleteModel, setDeleteModel] = useState<Model | null>(null)
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -30,32 +34,32 @@ export function ModelTypeSection({ type, models, providers, isLoading }: ModelTy
     switch (type) {
       case 'language':
         return {
-          title: 'Language Models',
-          description: 'Chat, transformations, and text generation',
+          title: tTypes('language.title'),
+          description: tTypes('language.description'),
           icon: Bot,
           iconColor: 'text-blue-500',
           bgColor: 'bg-blue-50 dark:bg-blue-950/20'
         }
       case 'embedding':
         return {
-          title: 'Embedding Models',
-          description: 'Semantic search and vector embeddings',
+          title: tTypes('embedding.title'),
+          description: tTypes('embedding.description'),
           icon: Search,
           iconColor: 'text-green-500',
           bgColor: 'bg-green-50 dark:bg-green-950/20'
         }
       case 'text_to_speech':
         return {
-          title: 'Text-to-Speech',
-          description: 'Generate audio from text',
+          title: tTypes('textToSpeech.title'),
+          description: tTypes('textToSpeech.description'),
           icon: Volume2,
           iconColor: 'text-purple-500',
           bgColor: 'bg-purple-50 dark:bg-purple-950/20'
         }
       case 'speech_to_text':
         return {
-          title: 'Speech-to-Text',
-          description: 'Transcribe audio to text',
+          title: tTypes('speechToText.title'),
+          description: tTypes('speechToText.description'),
           icon: Mic,
           iconColor: 'text-orange-500',
           bgColor: 'bg-orange-50 dark:bg-orange-950/20'
@@ -118,7 +122,7 @@ export function ModelTypeSection({ type, models, providers, isLoading }: ModelTy
                 className="cursor-pointer text-xs"
                 onClick={() => setSelectedProvider(null)}
               >
-                All
+                {t('allProviders')}
               </Badge>
               {modelProviders.map(provider => (
                 <Badge
@@ -142,9 +146,9 @@ export function ModelTypeSection({ type, models, providers, isLoading }: ModelTy
             </div>
           ) : filteredModels.length === 0 ? (
             <div className="text-center py-6 text-sm text-muted-foreground">
-              {selectedProvider 
-                ? `No ${selectedProvider} models configured`
-                : 'No models configured'
+              {selectedProvider
+                ? t('noProviderModels', { provider: selectedProvider })
+                : t('noModelsConfigured')
               }
             </div>
           ) : (
@@ -182,12 +186,12 @@ export function ModelTypeSection({ type, models, providers, isLoading }: ModelTy
                   {isExpanded ? (
                     <>
                       <ChevronUp className="h-4 w-4 mr-2" />
-                      Show less
+                      {t('showLess')}
                     </>
                   ) : (
                     <>
                       <ChevronDown className="h-4 w-4 mr-2" />
-                      Show {filteredModels.length - COLLAPSED_ITEM_COUNT} more
+                      {t('showMore', { count: filteredModels.length - COLLAPSED_ITEM_COUNT })}
                     </>
                   )}
                 </Button>
@@ -200,9 +204,9 @@ export function ModelTypeSection({ type, models, providers, isLoading }: ModelTy
       <ConfirmDialog
         open={!!deleteModel}
         onOpenChange={(open) => !open && setDeleteModel(null)}
-        title="Delete Model"
-        description={`Are you sure you want to delete "${deleteModel?.name}"? This action cannot be undone.`}
-        confirmText="Delete"
+        title={t('deleteDialog.title')}
+        description={t('deleteDialog.description', { name: deleteModel?.name || '' })}
+        confirmText={t('deleteDialog.confirm')}
         confirmVariant="destructive"
         onConfirm={handleDelete}
       />

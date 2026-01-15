@@ -850,5 +850,250 @@
         }
       }
     }
+  },
+  "models": {
+    "page": {
+      "title": "模型管理",
+      "description": "为 Open Notebook 的不同用途配置 AI 模型",
+      "loadFailed": "加载模型数据失败"
+    },
+    "providerStatus": {
+      "title": "AI 提供商",
+      "description": "通过环境变量配置提供商以启用其模型。",
+      "configuredCount": "{current}/{total} 已配置",
+      "noModels": "无模型",
+      "notConfigured": "未配置",
+      "seeLess": "收起",
+      "seeAll": "查看全部 {count} 个提供商",
+      "learnMore": "了解如何配置提供商"
+    },
+    "defaultModels": {
+      "title": "默认模型分配",
+      "description": "配置 Open Notebook 中不同用途所使用的模型",
+      "missingRequired": "缺少必需模型：{models}。没有这些模型，Open Notebook 可能无法正常运行。",
+      "requiredPlaceholder": "⚠️ 必需 - 选择模型",
+      "placeholder": "选择模型",
+      "whichModel": "我应该选择哪个模型？",
+      "configs": {
+        "chatModel": {
+          "label": "聊天模型",
+          "description": "用于对话聊天"
+        },
+        "transformationModel": {
+          "label": "转换模型",
+          "description": "用于摘要、洞察和转换"
+        },
+        "toolsModel": {
+          "label": "工具模型",
+          "description": "用于函数调用 - 建议使用 OpenAI 或 Anthropic"
+        },
+        "largeContextModel": {
+          "label": "大上下文模型",
+          "description": "用于处理大型文档 - 建议使用 Gemini"
+        },
+        "embeddingModel": {
+          "label": "嵌入模型",
+          "description": "用于语义搜索和向量嵌入"
+        },
+        "textToSpeechModel": {
+          "label": "文本转语音模型",
+          "description": "用于播客生成"
+        },
+        "speechToTextModel": {
+          "label": "语音转文本模型",
+          "description": "用于音频转录"
+        }
+      }
+    },
+    "embeddingChangeDialog": {
+      "title": "嵌入模型更改",
+      "description": "您即将更改嵌入模型",
+      "fromTo": "从 {from} 更改为 {to}",
+      "warning": {
+        "title": "⚠️ 重要：需要重建",
+        "message": "更改嵌入模型需要重建所有现有嵌入以保持一致性。如果不重建，您的搜索可能会返回不正确或不完整的结果。"
+      },
+      "whatNext": {
+        "title": "接下来的操作",
+        "points": {
+          "update": "您的默认嵌入模型将被更新",
+          "unchanged": "现有嵌入将保持不变，直到重建",
+          "newContent": "新内容将使用新的嵌入模型",
+          "rebuildSoon": "您应尽快重建嵌入"
+        }
+      },
+      "proceedQuestion": "是否要前往高级页面开始重建？",
+      "buttons": {
+        "cancel": "取消",
+        "changeOnly": "仅更改模型",
+        "changeAndRebuild": "更改并前往重建"
+      }
+    },
+    "modelTypeSection": {
+      "allProviders": "全部",
+      "noProviderModels": "未配置 {provider} 模型",
+      "noModelsConfigured": "未配置模型",
+      "showLess": "收起",
+      "showMore": "显示更多 {count} 个",
+      "types": {
+        "language": {
+          "title": "语言模型",
+          "description": "聊天、转换和文本生成"
+        },
+        "embedding": {
+          "title": "嵌入模型",
+          "description": "语义搜索和向量嵌入"
+        },
+        "textToSpeech": {
+          "title": "文本转语音",
+          "description": "从文本生成音频"
+        },
+        "speechToText": {
+          "title": "语音转文本",
+          "description": "将音频转录为文本"
+        }
+      },
+      "deleteDialog": {
+        "title": "删除模型",
+        "description": "确定要删除 \"{name}\" 吗？此操作无法撤销。",
+        "confirm": "删除"
+      }
+    },
+    "addModel": {
+      "button": "添加模型",
+      "noProviders": "没有可用的 {type} 模型提供商",
+      "dialogTitle": "添加 {type} 模型",
+      "dialogDescription": "从可用的提供商配置新的 {type} 模型。",
+      "types": {
+        "language": "语言",
+        "embedding": "嵌入",
+        "textToSpeech": "文本转语音",
+        "speechToText": "语音转文本"
+      },
+      "placeholders": {
+        "language": "例如：gpt-5-mini、claude、gemini",
+        "embedding": "例如：text-embedding-3-small",
+        "textToSpeech": "例如：tts-gpt-4o-mini-tts、tts-1-hd",
+        "speechToText": "例如：whisper-1"
+      },
+      "fields": {
+        "provider": {
+          "label": "提供商",
+          "placeholder": "选择提供商",
+          "error": "需要提供商"
+        },
+        "name": {
+          "label": "模型名称",
+          "error": "需要模型名称"
+        },
+        "azureHint": "对于 Azure，使用部署名称作为模型名称"
+      },
+      "buttons": {
+        "cancel": "取消",
+        "adding": "添加中…",
+        "submit": "添加模型"
+      }
+    }
+  },
+  "transformations": {
+    "page": {
+      "title": "转换",
+      "description": "转换是提示词，将由 LLM 用于处理资源并提取洞察、摘要等。",
+      "workspaceLabel": "选择工作区",
+      "tabsAriaLabel": "转换视图",
+      "tabs": {
+        "transformations": "转换",
+        "playground": "测试场"
+      }
+    },
+    "list": {
+      "title": "您的转换",
+      "emptyTitle": "还没有转换",
+      "emptyDescription": "创建您的第一个转换来处理和提取内容的洞察。",
+      "createButton": "创建新转换"
+    },
+    "card": {
+      "defaultBadge": "默认",
+      "playgroundButton": "测试场",
+      "editButton": "编辑",
+      "titleLabel": "标题",
+      "untitled": "无标题",
+      "descriptionLabel": "描述",
+      "promptLabel": "提示词",
+      "deleteDialog": {
+        "title": "删除转换",
+        "description": "确定要删除 \"{name}\" 吗？此操作无法撤销。",
+        "confirm": "删除"
+      }
+    },
+    "editor": {
+      "dialogTitle": {
+        "edit": "编辑转换",
+        "create": "创建转换"
+      },
+      "loading": "加载转换中…",
+      "validation": {
+        "nameRequired": "需要名称",
+        "promptRequired": "需要提示词"
+      },
+      "fields": {
+        "name": {
+          "label": "名称",
+          "placeholder": "唯一标识符，例如 key_topics"
+        },
+        "title": {
+          "label": "标题",
+          "placeholder": "显示标题，默认为名称"
+        },
+        "applyDefault": "在新资源上默认建议",
+        "description": {
+          "label": "描述",
+          "placeholder": "描述此转换的作用。"
+        },
+        "prompt": {
+          "label": "提示词",
+          "placeholder": "编写驱动此转换的提示词...",
+          "hint": "提示词应考虑资源内容。您可以要求模型摘要、提取洞察或生成结构化输出（如表格）。"
+        }
+      },
+      "buttons": {
+        "cancel": "取消",
+        "saving": "保存中…",
+        "creating": "创建中…",
+        "save": "保存转换",
+        "create": "创建转换"
+      }
+    },
+    "defaultPrompt": {
+      "title": "默认转换提示词",
+      "description": "这将添加到您的所有转换提示词中",
+      "placeholder": "输入您的默认转换指令...",
+      "saveButton": "保存"
+    },
+    "playground": {
+      "title": "测试场",
+      "description": "在将转换应用于资源之前，在示例文本上测试它们",
+      "fields": {
+        "transformation": {
+          "label": "转换",
+          "placeholder": "选择转换"
+        },
+        "model": {
+          "label": "模型",
+          "placeholder": "选择模型"
+        },
+        "input": {
+          "label": "输入文本",
+          "placeholder": "输入一些文本进行转换..."
+        },
+        "output": {
+          "label": "输出"
+        }
+      },
+      "buttons": {
+        "run": "运行转换",
+        "running": "运行中..."
+      }
+    }
   }
 }
