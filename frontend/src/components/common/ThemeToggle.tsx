@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useTheme } from '@/lib/stores/theme-store'
 import { Button } from '@/components/ui/button'
 import {
@@ -15,45 +16,46 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ iconOnly = false }: ThemeToggleProps) {
+  const t = useTranslations('components.themeToggle')
   const { theme, setTheme } = useTheme()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant={iconOnly ? "ghost" : "outline"} 
-          size={iconOnly ? "icon" : "default"} 
+        <Button
+          variant={iconOnly ? "ghost" : "outline"}
+          size={iconOnly ? "icon" : "default"}
           className={iconOnly ? "h-9 w-full" : "w-full justify-start gap-2"}
         >
           <div className="relative h-[1.2rem] w-[1.2rem]">
             <Sun className="absolute inset-0 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute inset-0 h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           </div>
-          {!iconOnly && <span>Theme</span>}
-          <span className="sr-only">Toggle theme</span>
+          {!iconOnly && <span>{t('label')}</span>}
+          <span className="sr-only">{t('toggle')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => setTheme('light')}
           className={theme === 'light' ? 'bg-accent' : ''}
         >
           <Sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
+          <span>{t('light')}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => setTheme('dark')}
           className={theme === 'dark' ? 'bg-accent' : ''}
         >
           <Moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
+          <span>{t('dark')}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => setTheme('system')}
           className={theme === 'system' ? 'bg-accent' : ''}
         >
           <Monitor className="mr-2 h-4 w-4" />
-          <span>System</span>
+          <span>{t('system')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

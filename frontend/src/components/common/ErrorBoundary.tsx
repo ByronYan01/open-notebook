@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
@@ -49,48 +50,57 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
-              </div>
-              <CardTitle className="text-red-900 dark:text-red-100">Something went wrong</CardTitle>
-              <CardDescription>
-                An unexpected error occurred. Please try refreshing the page.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {process.env.NODE_ENV === 'development' && this.state.error && (
-                <details className="text-xs bg-muted p-3 rounded border">
-                  <summary className="cursor-pointer font-medium">Error Details</summary>
-                  <pre className="mt-2 whitespace-pre-wrap break-all">
-                    {this.state.error.toString()}
-                  </pre>
-                </details>
-              )}
-              <Button 
-                onClick={this.resetError} 
-                className="w-full"
-                variant="outline"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Try Again
-              </Button>
-              <Button 
-                onClick={() => window.location.reload()} 
-                className="w-full"
-              >
-                Refresh Page
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <ErrorFallback error={this.state.error} resetError={this.resetError} />
       )
     }
 
     return this.props.children
   }
+}
+
+// Extracted fallback component for internationalization
+function ErrorFallback({ error, resetError }: { error?: Error; resetError: () => void }) {
+  const t = useTranslations('components.errorBoundary')
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
+            <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
+          </div>
+          <CardTitle className="text-red-900 dark:text-red-100">{t('title')}</CardTitle>
+          <CardDescription>
+            {t('description')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {process.env.NODE_ENV === 'development' && error && (
+            <details className="text-xs bg-muted p-3 rounded border">
+              <summary className="cursor-pointer font-medium">{t('errorDetails')}</summary>
+              <pre className="mt-2 whitespace-pre-wrap break-all">
+                {error.toString()}
+              </pre>
+            </details>
+          )}
+          <Button
+            onClick={resetError}
+            className="w-full"
+            variant="outline"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            {t('tryAgain')}
+          </Button>
+          <Button
+            onClick={() => window.location.reload()}
+            className="w-full"
+          >
+            {t('refreshPage')}
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
 
 // Hook version for functional components

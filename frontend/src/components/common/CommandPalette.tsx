@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCreateDialogs } from '@/lib/hooks/use-create-dialogs'
 import { useNotebooks } from '@/lib/hooks/use-notebooks'
 import { useTheme } from '@/lib/stores/theme-store'
@@ -30,36 +31,38 @@ import {
   Loader2,
 } from 'lucide-react'
 
-const navigationItems = [
-  { name: 'Sources', href: '/sources', icon: FileText, keywords: ['files', 'documents', 'upload'] },
-  { name: 'Notebooks', href: '/notebooks', icon: Book, keywords: ['notes', 'research', 'projects'] },
-  { name: 'Ask and Search', href: '/search', icon: Search, keywords: ['find', 'query'] },
-  { name: 'Podcasts', href: '/podcasts', icon: Mic, keywords: ['audio', 'episodes', 'generate'] },
-  { name: 'Models', href: '/models', icon: Bot, keywords: ['ai', 'llm', 'providers', 'openai', 'anthropic'] },
-  { name: 'Transformations', href: '/transformations', icon: Shuffle, keywords: ['prompts', 'templates', 'actions'] },
-  { name: 'Settings', href: '/settings', icon: Settings, keywords: ['preferences', 'config', 'options'] },
-  { name: 'Advanced', href: '/advanced', icon: Wrench, keywords: ['debug', 'system', 'tools'] },
-]
-
-const createItems = [
-  { name: 'Create Source', action: 'source', icon: FileText },
-  { name: 'Create Notebook', action: 'notebook', icon: Book },
-  { name: 'Create Podcast', action: 'podcast', icon: Mic },
-]
-
-const themeItems = [
-  { name: 'Light Theme', value: 'light' as const, icon: Sun, keywords: ['bright', 'day'] },
-  { name: 'Dark Theme', value: 'dark' as const, icon: Moon, keywords: ['night'] },
-  { name: 'System Theme', value: 'system' as const, icon: Monitor, keywords: ['auto', 'default'] },
-]
-
 export function CommandPalette() {
+  const t = useTranslations('components.commandPalette')
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const router = useRouter()
   const { openSourceDialog, openNotebookDialog, openPodcastDialog } = useCreateDialogs()
   const { setTheme } = useTheme()
   const { data: notebooks, isLoading: notebooksLoading } = useNotebooks(false)
+
+  // Build navigation items dynamically from translations
+  const navigationItems = useMemo(() => [
+    { name: t('navigation.sources'), href: '/sources', icon: FileText, keywords: ['files', 'documents', 'upload'] },
+    { name: t('navigation.notebooks'), href: '/notebooks', icon: Book, keywords: ['notes', 'research', 'projects'] },
+    { name: t('navigation.search'), href: '/search', icon: Search, keywords: ['find', 'query'] },
+    { name: t('navigation.podcasts'), href: '/podcasts', icon: Mic, keywords: ['audio', 'episodes', 'generate'] },
+    { name: t('navigation.models'), href: '/models', icon: Bot, keywords: ['ai', 'llm', 'providers', 'openai', 'anthropic'] },
+    { name: t('navigation.transformations'), href: '/transformations', icon: Shuffle, keywords: ['prompts', 'templates', 'actions'] },
+    { name: t('navigation.settings'), href: '/settings', icon: Settings, keywords: ['preferences', 'config', 'options'] },
+    { name: t('navigation.advanced'), href: '/advanced', icon: Wrench, keywords: ['debug', 'system', 'tools'] },
+  ], [t])
+
+  const createItems = useMemo(() => [
+    { name: t('create.source'), action: 'source' as const, icon: FileText },
+    { name: t('create.notebook'), action: 'notebook' as const, icon: Book },
+    { name: t('create.podcast'), action: 'podcast' as const, icon: Mic },
+  ], [t])
+
+  const themeItems = useMemo(() => [
+    { name: t('theme.light'), value: 'light' as const, icon: Sun, keywords: ['bright', 'day'] },
+    { name: t('theme.dark'), value: 'dark' as const, icon: Moon, keywords: ['night'] },
+    { name: t('theme.system'), value: 'system' as const, icon: Monitor, keywords: ['auto', 'default'] },
+  ], [t])
 
   // Global keyboard listener for ⌘K / Ctrl+K
   useEffect(() => {
@@ -147,7 +150,7 @@ export function CommandPalette() {
         (nb.description && nb.description.toLowerCase().includes(queryLower))
       ) ?? false)
     )
-  }, [queryLower, notebooks])
+  }, [queryLower, notebooks, navigationItems, createItems, themeItems])
 
   // Determine if we should show the Search/Ask section at the top
   const showSearchFirst = query.trim() && !hasCommandMatch
@@ -156,26 +159,26 @@ export function CommandPalette() {
     <CommandDialog
       open={open}
       onOpenChange={setOpen}
-      title="Command Palette"
-      description="Navigate, search, or ask your knowledge base"
+      title={t('title')}
+      description={t('description')}
       className="sm:max-w-lg"
     >
       <CommandInput
-        placeholder="Type a command or search..."
+        placeholder={t('placeholder')}
         value={query}
         onValueChange={setQuery}
       />
       <CommandList>
         {/* Search/Ask - show FIRST when there's a query with no command match */}
         {showSearchFirst && (
-          <CommandGroup heading="Search & Ask" forceMount>
+          <CommandGroup heading={t('groups.searchAndAsk')} forceMount>
             <CommandItem
               value={`__search__ ${query}`}
               onSelect={handleSearch}
               forceMount
             >
               <Search className="h-4 w-4" />
-              <span>Search for &ldquo;{query}&rdquo;</span>
+              <span>{t('actions.searchFor', { query })}</span>
             </CommandItem>
             <CommandItem
               value={`__ask__ ${query}`}
@@ -183,13 +186,13 @@ export function CommandPalette() {
               forceMount
             >
               <MessageCircleQuestion className="h-4 w-4" />
-              <span>Ask about &ldquo;{query}&rdquo;</span>
+              <span>{t('actions.askAbout', { query })}</span>
             </CommandItem>
           </CommandGroup>
         )}
 
         {/* Navigation */}
-        <CommandGroup heading="Navigation">
+        <CommandGroup heading={t('groups.navigation')}>
           {navigationItems.map((item) => (
             <CommandItem
               key={item.href}
@@ -203,11 +206,11 @@ export function CommandPalette() {
         </CommandGroup>
 
         {/* Notebooks */}
-        <CommandGroup heading="Notebooks">
+        <CommandGroup heading={t('groups.notebooks')}>
           {notebooksLoading ? (
             <CommandItem disabled>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Loading notebooks...</span>
+              <span>{t('loading')}</span>
             </CommandItem>
           ) : notebooks && notebooks.length > 0 ? (
             notebooks.map((notebook) => (
@@ -224,7 +227,7 @@ export function CommandPalette() {
         </CommandGroup>
 
         {/* Create */}
-        <CommandGroup heading="Create">
+        <CommandGroup heading={t('groups.create')}>
           {createItems.map((item) => (
             <CommandItem
               key={item.action}
@@ -238,7 +241,7 @@ export function CommandPalette() {
         </CommandGroup>
 
         {/* Theme */}
-        <CommandGroup heading="Theme">
+        <CommandGroup heading={t('groups.theme')}>
           {themeItems.map((item) => (
             <CommandItem
               key={item.value}
@@ -255,14 +258,14 @@ export function CommandPalette() {
         {query.trim() && hasCommandMatch && (
           <>
             <CommandSeparator />
-            <CommandGroup heading="Or search your knowledge base" forceMount>
+            <CommandGroup heading={t('groups.orSearch')} forceMount>
               <CommandItem
                 value={`__search__ ${query}`}
                 onSelect={handleSearch}
                 forceMount
               >
                 <Search className="h-4 w-4" />
-                <span>Search for &ldquo;{query}&rdquo;</span>
+                <span>{t('actions.searchFor', { query })}</span>
               </CommandItem>
               <CommandItem
                 value={`__ask__ ${query}`}
@@ -270,7 +273,7 @@ export function CommandPalette() {
                 forceMount
               >
                 <MessageCircleQuestion className="h-4 w-4" />
-                <span>Ask about &ldquo;{query}&rdquo;</span>
+                <span>{t('actions.askAbout', { query })}</span>
               </CommandItem>
             </CommandGroup>
           </>

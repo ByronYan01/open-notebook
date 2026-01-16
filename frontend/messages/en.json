@@ -15,6 +15,126 @@
     "expand": "Expand",
     "collapse": "Collapse"
   },
+  "components": {
+    "confirmDialog": {
+      "confirm": "Confirm",
+      "delete": "Delete",
+      "cancel": "Cancel"
+    },
+    "themeToggle": {
+      "label": "Theme",
+      "toggle": "Toggle theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "modelSelector": {
+      "placeholder": "Select a model",
+      "noModelsAvailable": "No {type} models available",
+      "types": {
+        "language": "Language",
+        "embedding": "Embedding",
+        "speechToText": "Speech to Text",
+        "textToSpeech": "Text to Speech"
+      }
+    },
+    "commandPalette": {
+      "title": "Command Palette",
+      "description": "Navigate, search, or ask your knowledge base",
+      "placeholder": "Type a command or search...",
+      "loading": "Loading notebooks...",
+      "navigation": {
+        "sources": "Sources",
+        "notebooks": "Notebooks",
+        "search": "Ask and Search",
+        "podcasts": "Podcasts",
+        "models": "Models",
+        "transformations": "Transformations",
+        "settings": "Settings",
+        "advanced": "Advanced"
+      },
+      "create": {
+        "source": "Create Source",
+        "notebook": "Create Notebook",
+        "podcast": "Create Podcast"
+      },
+      "theme": {
+        "light": "Light Theme",
+        "dark": "Dark Theme",
+        "system": "System Theme"
+      },
+      "groups": {
+        "searchAndAsk": "Search & Ask",
+        "navigation": "Navigation",
+        "notebooks": "Notebooks",
+        "create": "Create",
+        "theme": "Theme",
+        "orSearch": "Or search your knowledge base"
+      },
+      "actions": {
+        "searchFor": "Search for \"{query}\"",
+        "askAbout": "Ask about \"{query}\""
+      }
+    },
+    "errorBoundary": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try refreshing the page.",
+      "errorDetails": "Error Details",
+      "tryAgain": "Try Again",
+      "refreshPage": "Refresh Page"
+    },
+    "inlineEdit": {
+      "clickToEdit": "Click to edit"
+    }
+  },
+  "auth": {
+    "title": "Open Notebook",
+    "description": "Enter your password to access the application",
+    "passwordPlaceholder": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "version": "Version",
+    "connectionError": {
+      "title": "Connection Error",
+      "description": "Unable to connect to the API server",
+      "serverNotRunning": "Unable to connect to server. Please check if the API is running.",
+      "diagnostics": "Diagnostic Information",
+      "version": "Version",
+      "built": "Built",
+      "apiUrl": "API URL",
+      "frontend": "Frontend",
+      "checkConsole": "Check browser console for detailed logs (look for 🔧 [Config] messages)",
+      "retry": "Retry Connection"
+    }
+  },
+  "nav": {
+    "create": "Create",
+    "theme": "Theme",
+    "signOut": "Sign Out",
+    "quickActions": "Quick actions",
+    "quickActionsHint": "Navigation, search, ask, theme",
+    "sections": {
+      "collect": "Collect",
+      "process": "Process",
+      "create": "Create",
+      "manage": "Manage"
+    },
+    "items": {
+      "sources": "Sources",
+      "notebooks": "Notebooks",
+      "search": "Ask and Search",
+      "podcasts": "Podcasts",
+      "models": "Models",
+      "transformations": "Transformations",
+      "settings": "Settings",
+      "advanced": "Advanced"
+    },
+    "createMenu": {
+      "source": "Source",
+      "notebook": "Notebook",
+      "podcast": "Podcast"
+    }
+  },
   "notebooks": {
     "page": {
       "title": "Notebooks",

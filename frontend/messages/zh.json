@@ -15,6 +15,126 @@
     "expand": "展开",
     "collapse": "折叠"
   },
+  "components": {
+    "confirmDialog": {
+      "confirm": "确认",
+      "delete": "删除",
+      "cancel": "取消"
+    },
+    "themeToggle": {
+      "label": "主题",
+      "toggle": "切换主题",
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
+    },
+    "modelSelector": {
+      "placeholder": "选择模型",
+      "noModelsAvailable": "没有可用的{type}模型",
+      "types": {
+        "language": "语言",
+        "embedding": "嵌入",
+        "speechToText": "语音转文本",
+        "textToSpeech": "文本转语音"
+      }
+    },
+    "commandPalette": {
+      "title": "命令面板",
+      "description": "导航、搜索或询问您的知识库",
+      "placeholder": "输入命令或搜索...",
+      "loading": "正在加载笔记本...",
+      "navigation": {
+        "sources": "资源",
+        "notebooks": "笔记本",
+        "search": "提问和搜索",
+        "podcasts": "播客",
+        "models": "模型",
+        "transformations": "转换",
+        "settings": "设置",
+        "advanced": "高级"
+      },
+      "create": {
+        "source": "创建资源",
+        "notebook": "创建笔记本",
+        "podcast": "创建播客"
+      },
+      "theme": {
+        "light": "浅色主题",
+        "dark": "深色主题",
+        "system": "跟随系统主题"
+      },
+      "groups": {
+        "searchAndAsk": "搜索和提问",
+        "navigation": "导航",
+        "notebooks": "笔记本",
+        "create": "创建",
+        "theme": "主题",
+        "orSearch": "或搜索您的知识库"
+      },
+      "actions": {
+        "searchFor": "搜索 \"{query}\"",
+        "askAbout": "询问关于 \"{query}\""
+      }
+    },
+    "errorBoundary": {
+      "title": "出现错误",
+      "description": "发生了意外错误。请尝试刷新页面。",
+      "errorDetails": "错误详情",
+      "tryAgain": "重试",
+      "refreshPage": "刷新页面"
+    },
+    "inlineEdit": {
+      "clickToEdit": "点击编辑"
+    }
+  },
+  "auth": {
+    "title": "Open Notebook",
+    "description": "输入密码以访问应用程序",
+    "passwordPlaceholder": "密码",
+    "signIn": "登录",
+    "signingIn": "登录中...",
+    "version": "版本",
+    "connectionError": {
+      "title": "连接错误",
+      "description": "无法连接到 API 服务器",
+      "serverNotRunning": "无法连接到服务器。请检查 API 是否正在运行。",
+      "diagnostics": "诊断信息",
+      "version": "版本",
+      "built": "构建时间",
+      "apiUrl": "API 地址",
+      "frontend": "前端",
+      "checkConsole": "检查浏览器控制台以获取详细日志（查找 🔧 [Config] 消息）",
+      "retry": "重试连接"
+    }
+  },
+  "nav": {
+    "create": "创建",
+    "theme": "主题",
+    "signOut": "退出登录",
+    "quickActions": "快速操作",
+    "quickActionsHint": "导航、搜索、提问、主题",
+    "sections": {
+      "collect": "收集",
+      "process": "处理",
+      "create": "创建",
+      "manage": "管理"
+    },
+    "items": {
+      "sources": "资源",
+      "notebooks": "笔记本",
+      "search": "提问和搜索",
+      "podcasts": "播客",
+      "models": "模型",
+      "transformations": "转换",
+      "settings": "设置",
+      "advanced": "高级"
+    },
+    "createMenu": {
+      "source": "资源",
+      "notebook": "笔记本",
+      "podcast": "播客"
+    }
+  },
   "notebooks": {
     "page": {
       "title": "笔记本",

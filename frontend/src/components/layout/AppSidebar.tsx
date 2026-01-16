@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -40,40 +41,10 @@ import {
   Command,
 } from 'lucide-react'
 
-const navigation = [
-  {
-    title: 'Collect',
-    items: [
-      { name: 'Sources', href: '/sources', icon: FileText },
-    ],
-  },
-  {
-    title: 'Process',
-    items: [
-      { name: 'Notebooks', href: '/notebooks', icon: Book },
-      { name: 'Ask and Search', href: '/search', icon: Search },
-    ],
-  },
-  {
-    title: 'Create',
-    items: [
-      { name: 'Podcasts', href: '/podcasts', icon: Mic },
-    ],
-  },
-  {
-    title: 'Manage',
-    items: [
-      { name: 'Models', href: '/models', icon: Bot },
-      { name: 'Transformations', href: '/transformations', icon: Shuffle },
-      { name: 'Settings', href: '/settings', icon: Settings },
-      { name: 'Advanced', href: '/advanced', icon: Wrench },
-    ],
-  },
-] as const
-
 type CreateTarget = 'source' | 'notebook' | 'podcast'
 
 export function AppSidebar() {
+  const t = useTranslations('nav')
   const pathname = usePathname()
   const { logout } = useAuth()
   const { isCollapsed, toggleCollapse } = useSidebarStore()
@@ -98,6 +69,37 @@ export function AppSidebar() {
       openPodcastDialog()
     }
   }
+
+  const navigation = [
+    {
+      title: t('sections.collect'),
+      items: [
+        { name: t('items.sources'), href: '/sources', icon: FileText },
+      ],
+    },
+    {
+      title: t('sections.process'),
+      items: [
+        { name: t('items.notebooks'), href: '/notebooks', icon: Book },
+        { name: t('items.search'), href: '/search', icon: Search },
+      ],
+    },
+    {
+      title: t('sections.create'),
+      items: [
+        { name: t('items.podcasts'), href: '/podcasts', icon: Mic },
+      ],
+    },
+    {
+      title: t('sections.manage'),
+      items: [
+        { name: t('items.models'), href: '/models', icon: Bot },
+        { name: t('items.transformations'), href: '/transformations', icon: Shuffle },
+        { name: t('items.settings'), href: '/settings', icon: Settings },
+        { name: t('items.advanced'), href: '/advanced', icon: Wrench },
+      ],
+    },
+  ]
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -173,13 +175,13 @@ export function AppSidebar() {
                         variant="default"
                         size="sm"
                         className="w-full justify-center px-2 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
-                        aria-label="Create"
+                        aria-label={t('create')}
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="right">Create</TooltipContent>
+                  <TooltipContent side="right">{t('create')}</TooltipContent>
                 </Tooltip>
               ) : (
                 <DropdownMenuTrigger asChild>
@@ -190,7 +192,7 @@ export function AppSidebar() {
                     className="w-full justify-start bg-primary hover:bg-primary/90 text-primary-foreground border-0"
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Create
+                    {t('create')}
                   </Button>
                 </DropdownMenuTrigger>
               )}
@@ -208,7 +210,7 @@ export function AppSidebar() {
                   className="gap-2"
                 >
                   <FileText className="h-4 w-4" />
-                  Source
+                  {t('createMenu.source')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={(event) => {
@@ -218,7 +220,7 @@ export function AppSidebar() {
                   className="gap-2"
                 >
                   <Book className="h-4 w-4" />
-                  Notebook
+                  {t('createMenu.notebook')}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={(event) => {
@@ -228,7 +230,7 @@ export function AppSidebar() {
                   className="gap-2"
                 >
                   <Mic className="h-4 w-4" />
-                  Podcast
+                  {t('createMenu.podcast')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -298,14 +300,14 @@ export function AppSidebar() {
               <div className="flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Command className="h-3 w-3" />
-                  Quick actions
+                  {t('quickActions')}
                 </span>
                 <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
                   {isMac ? <span className="text-xs">⌘</span> : <span>Ctrl+</span>}K
                 </kbd>
               </div>
               <p className="mt-1 text-[10px] text-sidebar-foreground/40">
-                Navigation, search, ask, theme
+                {t('quickActionsHint')}
               </p>
             </div>
           )}
@@ -323,7 +325,7 @@ export function AppSidebar() {
                     <ThemeToggle iconOnly />
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="right">Theme</TooltipContent>
+                <TooltipContent side="right">{t('theme')}</TooltipContent>
               </Tooltip>
             ) : (
               <ThemeToggle />
@@ -341,7 +343,7 @@ export function AppSidebar() {
                   <LogOut className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side="right">Sign Out</TooltipContent>
+              <TooltipContent side="right">{t('signOut')}</TooltipContent>
             </Tooltip>
           ) : (
             <Button
@@ -350,7 +352,7 @@ export function AppSidebar() {
               onClick={logout}
             >
               <LogOut className="h-4 w-4" />
-              Sign Out
+              {t('signOut')}
             </Button>
           )}
         </div>
